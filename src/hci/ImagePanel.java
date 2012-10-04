@@ -17,13 +17,10 @@ import javax.swing.JPanel;
 
 /**
  * Handles image editing panel
- * @author Michal
- *
+ * 
  */
 public class ImagePanel extends JPanel implements MouseListener {
-	/**
-	 * some java stuff to get rid of warnings
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	/**
