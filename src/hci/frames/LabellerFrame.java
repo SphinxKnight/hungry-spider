@@ -139,7 +139,7 @@ public class LabellerFrame extends javax.swing.JFrame {
 						}
 					}
 					{
-						jButton5 = new JButton(new ImageIcon("test.jpeg",
+						jButton5 = new JButton(new ImageIcon("./move2red.gif",
                                 "move polygon/oval"));
 						jButton5.setOpaque(true);
 
