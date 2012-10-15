@@ -70,7 +70,7 @@ public class ImagePanel extends JPanel implements MouseListener {
 			System.out.println("SCALING TO " + newWidth + "x" + newHeight );
 			Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
 			image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-			image.getGraphics().drawImage(scaledImage, 0, 0, this);
+			image.getGraphics().drawImage(scaledImage,0,0,  this);
 		}
 	}
 
@@ -82,15 +82,14 @@ public class ImagePanel extends JPanel implements MouseListener {
 		
 		if (image != null) {
 			g.drawImage(
-					image, 0, 0, null);
+					image,0,0, this);
 		}
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		super.paint(g);
 		
-		//display iamge
+		//display image
 		ShowImage();
 		
 		//display all the completed polygons
