@@ -32,13 +32,25 @@ public class Polygon extends Form{
 			int i;
 			for(i=0;i<listCoord.size()-1;i++){
 				g1.drawLine(listCoord.get(i).x,listCoord.get(i).y ,listCoord.get(i+1).x, listCoord.get(i+1).y);
+				g1.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
 			}
 			//And the final one
 			g1.drawLine(listCoord.get(i).x,listCoord.get(i).y ,listCoord.get(0).x, listCoord.get(0).y);	
 		}
 	}
 	
+	// tests if p is a vertex of the polygon, with a margin of 5 pixels
+	public boolean isInPolygon(Point p){
+		for(Point point : listCoord){
+			System.out.println(point);
+			if ( (p.getX()>point.getX()-10) && (p.getX()<point.getX()+10) && (p.getY()>point.getY()-10) && (p.getY()<point.getY()+10) )
+				return true;
+		}
+		return false;
+	}
+	
 	public int getSize(){
+		System.out.println(listCoord.size());
 		return listCoord.size();
 	}
 	

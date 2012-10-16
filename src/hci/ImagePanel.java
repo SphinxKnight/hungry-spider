@@ -8,6 +8,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -19,10 +20,15 @@ import javax.swing.JPanel;
  * Handles image editing panel
  * 
  */
-public class ImagePanel extends JPanel implements MouseListener {
+public class ImagePanel extends JPanel implements MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 
+	//coordinates of the last clicked point
+	Point pressed;
+	
+	boolean dragged = false;
+	
 	//image to be tagged
 	BufferedImage image = null;
 	
@@ -50,6 +56,7 @@ public class ImagePanel extends JPanel implements MouseListener {
 		this.setMaximumSize(panelSize);
 		
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
 
 	
@@ -176,13 +183,61 @@ public class ImagePanel extends JPanel implements MouseListener {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {
+	public void mousePressed(MouseEvent e) {
+		System.out.println("pressed");
+		pressed = e.getPoint();
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent e) {
+		if (dragged){
+			Point p = e.getPoint();
+			
+			for(Polygon polygon : polygonsList){
+				System.out.println("au moins 1");
+				//if we clicked on a polygon's vertex
+				if (polygon.isInPolygon(pressed)){
+					System.out.println("is in");
+					ArrayList<Point> newCoord = new ArrayList<Point>();
+					System.out.println("1");
+					for (int i=0; i< polygon.getSize(); i++){
+						System.out.println("for1");
+						int newX = (int) (polygon.getListCoord().get(i).getX() + p.getX() - pressed.getX()) ;
+						System.out.println("2");
+						int newY = (int) (polygon.getListCoord().get(i).getY() + p.getY() - pressed.getY()) ;
+						System.out.println("3");
+						newCoord.add(new Point(newX, newY));
+						System.out.println("4");
+
+					}
+					polygon.setListCoord(newCoord);
+					System.out.println("5");
+					Graphics2D g = (Graphics2D)this.getGraphics();
+					System.out.println("6");
+					g.setColor(polygon.getColor());
+					System.out.println("6");
+					polygon.drawForm(g);
+					System.out.println("7");
+				}
+				System.out.println("is out");
+			}
+		}
+		dragged = false;
 	}
 
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("dragged");
+		dragged = true;
+
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {		
+	}
 
 	public Polygon getCurrentPolygon() {
 		return currentPolygon;

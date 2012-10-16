@@ -103,10 +103,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jButton2 = new JButton();
 						jButton2.setText("Close this polygon");
 						jButton2.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e)
-				            {
-				                //Execute when button is pressed
-				                imagePanel.finishPolygon(imagePanel.getCurrentPolygon());
+							public void actionPerformed(ActionEvent e){
+				                imagePanel.addNewPolygon();
 				            }
 				        });       
 					}
