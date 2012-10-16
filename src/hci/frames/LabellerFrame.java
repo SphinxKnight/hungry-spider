@@ -4,6 +4,8 @@ import hci.ImagePanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -30,7 +32,7 @@ import javax.swing.WindowConstants;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class LabellerFrame extends javax.swing.JFrame {
+public class LabellerFrame extends javax.swing.JFrame implements ActionListener {
 
 	{
 		//Set Look & Feel
@@ -99,7 +101,14 @@ public class LabellerFrame extends javax.swing.JFrame {
 					}
 					{
 						jButton2 = new JButton();
-						jButton2.setText("jButton2");
+						jButton2.setText("Close this polygon");
+						jButton2.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e)
+				            {
+				                //Execute when button is pressed
+				                imagePanel.finishPolygon(imagePanel.getCurrentPolygon());
+				            }
+				        });       
 					}
 					{
 						jButton3 = new JButton();
@@ -201,6 +210,12 @@ public class LabellerFrame extends javax.swing.JFrame {
 		
 		super.paint(g);
 		imagePanel.paint(g); //update image panel
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 

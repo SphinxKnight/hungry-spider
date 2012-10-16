@@ -16,6 +16,13 @@ public abstract class Form {
 		this.color = color;
 	}
 	
+	public Form(int id){
+		super();
+		this.name = "";
+		this.id = id;
+		this.color = Color.green;
+	}
+	
 	public abstract void drawForm(Graphics g1);
 	
 	
