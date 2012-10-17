@@ -103,7 +103,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		}
 		
 		//display current polygon
-		drawPolygon(getCurrentPolygon());
+		drawPolygon(currentPolygon);
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	 */
 	public void finishPolygon(Polygon polygon) {
 		//if there are less than 3 vertices than nothing to be completed
-		if (polygon.getListCoord().size() >= 3) {
+		if (polygon.getListCoord().size() >= 2) {
 			Point firstVertex = polygon.getListCoord().get(0);
 			Point lastVertex = polygon.getListCoord().get(polygon.getListCoord().size() - 1);
 		
@@ -130,6 +130,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			g.setColor(Color.GREEN);
 			g.drawLine((int) firstVertex.getX(),(int) firstVertex.getY(), (int) lastVertex.getX(),(int) lastVertex.getY());
 		}
+		System.out.println("finished !!");
 	}
 	
 	/**
@@ -137,9 +138,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	 */
 	public void addNewPolygon() {
 		//finish the current polygon if any
-		if (getCurrentPolygon() != null ) {
-			finishPolygon(getCurrentPolygon());
-			polygonsList.add(getCurrentPolygon());
+		if (currentPolygon != null ) {
+			finishPolygon(currentPolygon);
+			polygonsList.add(currentPolygon);
 		}
 		
 		currentId++;
@@ -162,15 +163,20 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		//if the left button than we will add a vertex to poly
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			g.setColor(Color.GREEN);
-			if (getCurrentPolygon().getSize() != 0) {
-				Point lastVertex = getCurrentPolygon().getListCoord().get(getCurrentPolygon().getSize() - 1);
-				g.drawLine((int) lastVertex.getX(),(int) lastVertex.getY(),(int) x, y);
+			if (currentPolygon.isFirstVertex(new Point(x, y))){
+				addNewPolygon();
 			}
-			g.fillOval(x-5,y-5,10,10);
-			
-			getCurrentPolygon().addPoint(new Point(x,y));
-			//currentPolygon.drawForm(g);
-			System.out.println(x + " " + y);
+			else{
+				if (currentPolygon.getSize() != 0) {
+					Point lastVertex = currentPolygon.getListCoord().get(currentPolygon.getSize() - 1);
+					g.drawLine((int) lastVertex.getX(),(int) lastVertex.getY(),(int) x, y);
+				}
+				g.fillOval(x-5,y-5,10,10);
+				
+				currentPolygon.addPoint(new Point(x,y));
+				//currentPolygon.drawForm(g);
+				System.out.println(x + " " + y);
+			}
 		} 
 	}
 
@@ -184,7 +190,6 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		System.out.println("pressed");
 		pressed = e.getPoint();
 	}
 

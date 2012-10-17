@@ -42,16 +42,27 @@ public class Polygon extends Form{
 	
 	// tests if p is a vertex of the polygon, with a margin of 5 pixels
 	public int isInPolygon(Point p){
+		if (listCoord.size() == 0)
+			return -1;
 		for(int i=0; i<listCoord.size(); i++){
 			Point point = listCoord.get(i);
-			if ( (p.getX()>point.getX()-10) && (p.getX()<point.getX()+10) && (p.getY()>point.getY()-10) && (p.getY()<point.getY()+10) )
+			if ( (p.getX()>point.getX()-5) && (p.getX()<point.getX()+5) && (p.getY()>point.getY()-5) && (p.getY()<point.getY()+5) )
 				return i;
 		}
 		return -1;
 	}
 	
+	public boolean isFirstVertex(Point p){
+		if (listCoord.size() == 0)
+			return false;
+		Point point = listCoord.get(0);
+		if ( (p.getX()>point.getX()-5) && (p.getX()<point.getX()+5) && (p.getY()>point.getY()-5) && (p.getY()<point.getY()+5) )
+			return true;
+		else
+			return false;
+	}
+	
 	public int getSize(){
-		System.out.println(listCoord.size());
 		return listCoord.size();
 	}
 	
