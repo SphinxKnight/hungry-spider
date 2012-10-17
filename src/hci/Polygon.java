@@ -36,6 +36,7 @@ public class Polygon extends Form{
 			}
 			//And the final one
 			g1.drawLine(listCoord.get(i).x,listCoord.get(i).y ,listCoord.get(0).x, listCoord.get(0).y);	
+			g1.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
 		}
 	}
 	
