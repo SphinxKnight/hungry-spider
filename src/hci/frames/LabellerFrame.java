@@ -14,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
@@ -58,6 +59,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JTabbedPane jTabbedPane1;
 	private JButton jButton3;
 	private JButton jButton2;
+	private JToggleButton jToggle1;
 
 	private JPanel jPanel1;
 	ImagePanel imagePanel = null;
@@ -105,6 +107,16 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jButton2.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e){
 				                imagePanel.addNewPolygon();
+				            }
+				        });       
+					}
+					{
+						jToggle1 = new JToggleButton();
+						jToggle1.setText("Move whole Polygon");
+						jToggle1.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+								//TODO
+								imagePanel.setAllPoly(jToggle1.isSelected());
 				            }
 				        });       
 					}
@@ -166,6 +178,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						        .addGap(78)
 						        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						        .addGap(116)
+						        .addComponent(jToggle1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addGap(116)
 						        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						        .addGap(90)
 						        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -192,6 +206,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						        .addComponent(jPanel4, 0, 622, Short.MAX_VALUE)
 						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 						        .addGap(25))));

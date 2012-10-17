@@ -41,13 +41,13 @@ public class Polygon extends Form{
 	}
 	
 	// tests if p is a vertex of the polygon, with a margin of 5 pixels
-	public boolean isInPolygon(Point p){
-		for(Point point : listCoord){
-			System.out.println(point);
+	public int isInPolygon(Point p){
+		for(int i=0; i<listCoord.size(); i++){
+			Point point = listCoord.get(i);
 			if ( (p.getX()>point.getX()-10) && (p.getX()<point.getX()+10) && (p.getY()>point.getY()-10) && (p.getY()<point.getY()+10) )
-				return true;
+				return i;
 		}
-		return false;
+		return -1;
 	}
 	
 	public int getSize(){

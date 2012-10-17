@@ -27,7 +27,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	//coordinates of the last clicked point
 	Point pressed;
 	
-	boolean dragged = false;
+	boolean allPoly = false;
 	
 	//image to be tagged
 	BufferedImage image = null;
@@ -199,31 +199,41 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		Point p = e.getPoint();
 		
 		for(Polygon polygon : polygonsList){
-			System.out.println("au moins 1");
+			
 			//if we clicked on a polygon's vertex
-			if (polygon.isInPolygon(pressed)){
-				System.out.println("is in");
-				ArrayList<Point> newCoord = new ArrayList<Point>();
-				System.out.println("1");
-				for (int i=0; i< polygon.getSize(); i++){
-					System.out.println("for1");
-					int newX = (int) (polygon.getListCoord().get(i).getX() + p.getX() - pressed.getX()) ;
-					System.out.println("2");
-					int newY = (int) (polygon.getListCoord().get(i).getY() + p.getY() - pressed.getY()) ;
-					System.out.println("3");
-					newCoord.add(new Point(newX, newY));
-					System.out.println("4");
+			int corner = polygon.isInPolygon(pressed);
+			if (corner>=0){
+				// if we are in the mode where the whole polygon is moved
+				if (allPoly){
+					ArrayList<Point> newCoord = new ArrayList<Point>();
+					for (int i=0; i< polygon.getSize(); i++){
+						int newX = (int) (polygon.getListCoord().get(i).getX() + p.getX() - pressed.getX()) ;
+						int newY = (int) (polygon.getListCoord().get(i).getY() + p.getY() - pressed.getY()) ;
+						newCoord.add(new Point(newX, newY));
+						}
+					polygon.setListCoord(newCoord);
+					Graphics2D g = (Graphics2D)this.getGraphics();
+					g.setColor(polygon.getColor());
+					paint(g);
+				}
+				else{
+					ArrayList<Point> newCoord = new ArrayList<Point>();
+					for (int i=0; i< polygon.getSize(); i++){
+						if (i!= corner){
+							newCoord.add(polygon.getListCoord().get(i));
+						}
+						else{
+							int newX = (int) (polygon.getListCoord().get(corner).getX() + p.getX() - pressed.getX()) ;
+							int newY = (int) (polygon.getListCoord().get(corner).getY() + p.getY() - pressed.getY()) ;
+							newCoord.add(new Point(newX, newY));
+						}
 					}
-				polygon.setListCoord(newCoord);
-				System.out.println("5");
-				Graphics2D g = (Graphics2D)this.getGraphics();
-				System.out.println("6");
-				g.setColor(polygon.getColor());
-				System.out.println("6");
-				paint(g);
-				System.out.println("7");
+					polygon.setListCoord(newCoord);
+					Graphics2D g = (Graphics2D)this.getGraphics();
+					g.setColor(polygon.getColor());
+					paint(g);
+				}
 			}
-			System.out.println("is out");
 		}
 		pressed = p;
 	}
@@ -240,6 +250,10 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	public void setCurrentPolygon(Polygon currentPolygon) {
 		this.currentPolygon = currentPolygon;
+	}
+	
+	public void setAllPoly(boolean b){
+		this.allPoly = b;
 	}
 	
 }
