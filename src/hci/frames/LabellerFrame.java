@@ -4,6 +4,8 @@ import hci.ImagePanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -12,6 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingUtilities;
@@ -30,7 +33,7 @@ import javax.swing.WindowConstants;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class LabellerFrame extends javax.swing.JFrame {
+public class LabellerFrame extends javax.swing.JFrame implements ActionListener {
 
 	{
 		//Set Look & Feel
@@ -56,6 +59,7 @@ public class LabellerFrame extends javax.swing.JFrame {
 	private JTabbedPane jTabbedPane1;
 	private JButton jButton3;
 	private JButton jButton2;
+	private JToggleButton jToggle1;
 
 	private JPanel jPanel1;
 	ImagePanel imagePanel = null;
@@ -99,7 +103,22 @@ public class LabellerFrame extends javax.swing.JFrame {
 					}
 					{
 						jButton2 = new JButton();
-						jButton2.setText("jButton2");
+						jButton2.setText("Close this polygon");
+						jButton2.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+				                imagePanel.addNewPolygon();
+				            }
+				        });       
+					}
+					{
+						jToggle1 = new JToggleButton();
+						jToggle1.setText("Move whole Polygon");
+						jToggle1.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+								//TODO
+								imagePanel.setAllPoly(jToggle1.isSelected());
+				            }
+				        });       
 					}
 					{
 						jButton3 = new JButton();
@@ -159,6 +178,8 @@ public class LabellerFrame extends javax.swing.JFrame {
 						        .addGap(78)
 						        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						        .addGap(116)
+						        .addComponent(jToggle1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addGap(116)
 						        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						        .addGap(90)
 						        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -185,6 +206,7 @@ public class LabellerFrame extends javax.swing.JFrame {
 						        .addComponent(jPanel4, 0, 622, Short.MAX_VALUE)
 						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 						        .addGap(25))));
@@ -201,6 +223,12 @@ public class LabellerFrame extends javax.swing.JFrame {
 		
 		super.paint(g);
 		imagePanel.paint(g); //update image panel
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 
