@@ -126,7 +126,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			Point lastVertex = polygon.getListCoord().get(polygon.getListCoord().size() - 1);
 		
 			Graphics2D g = (Graphics2D)this.getGraphics();
-			g.setColor(Color.GREEN);
+			g.setColor(polygon.getColor());
 			g.drawLine((int) firstVertex.getX(),(int) firstVertex.getY(), (int) lastVertex.getX(),(int) lastVertex.getY());
 		}
 	}
@@ -160,8 +160,8 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		//if the left button than we will add a vertex to poly
 		if (e.getButton() == MouseEvent.BUTTON1) {
-			g.setColor(Color.GREEN);
-			if (currentPolygon.isFirstVertex(new Point(x, y))){
+			g.setColor(currentPolygon.getColor());
+			if (currentPolygon.isFirstVertex(new Point(x, y)) && currentPolygon.getSize()>2){
 				addNewPolygon();
 			}
 			else{
@@ -173,7 +173,6 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 				
 				currentPolygon.addPoint(new Point(x,y));
 				//currentPolygon.drawForm(g);
-				System.out.println(x + " " + y);
 			}
 		} 
 	}

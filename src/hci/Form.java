@@ -20,7 +20,10 @@ public abstract class Form {
 		super();
 		this.name = "";
 		this.id = id;
-		this.color = Color.green;
+		Color col=new Color((int)(Math.random()*256),
+				(int)(Math.random()*256),
+				(int)(Math.random()*256));
+		this.color = col;
 	}
 	
 	public abstract void drawForm(Graphics g1);

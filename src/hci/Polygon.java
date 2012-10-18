@@ -17,7 +17,10 @@ public class Polygon extends Form{
 	public Polygon(int id){
 		super(id);
 		this.name = "";
-		this.color = Color.GREEN;
+		Color col=new Color((int)(Math.random()*256),
+				(int)(Math.random()*256),
+				(int)(Math.random()*256));
+		this.color = col;
 		this.id = id;
 	}
 	
