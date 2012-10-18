@@ -1,6 +1,7 @@
 package hci;
 
-import java.awt.Color;
+import hci.frames.LabellerFrame;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -143,6 +144,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		currentId++;
 		setCurrentPolygon(new Polygon(currentId));
+		
+		// refresh the polygon panel on the right side
+		LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
 	}
 
 	@Override
@@ -244,6 +248,18 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	@Override
 	public void mouseMoved(MouseEvent arg0) {		
 	}
+	
+	public String stringForPoly(Polygon polygon) {
+		String listText;
+		if (polygon.getName() != ""){
+			listText = "Polygon number "+polygon.getId() + "\n"
+						+polygon.getName();
+		}
+		else{
+			listText = "Polygon number "+polygon.getId();
+		}
+		return listText;
+	}
 
 	public Polygon getCurrentPolygon() {
 		return currentPolygon;
@@ -256,6 +272,15 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	
 	public void setAllPoly(boolean b){
 		this.allPoly = b;
+	}
+	
+	public int getNumberPolygon(){
+		return polygonsList.size();
+	}
+
+
+	public ArrayList<Polygon> getPolygonsList() {
+		return polygonsList;
 	}
 	
 }

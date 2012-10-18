@@ -4,8 +4,12 @@ import hci.ImagePanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -60,6 +64,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton3;
 	private JButton jButton2;
 	private JToggleButton jToggle1;
+	private static List polyList;
 
 	private JPanel jPanel1;
 	ImagePanel imagePanel = null;
@@ -115,7 +120,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jToggle1.setText("Move whole Polygon");
 						jToggle1.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e){
-								//TODO
 								imagePanel.setAllPoly(jToggle1.isSelected());
 				            }
 				        });       
@@ -140,8 +144,33 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 					{
 						jTabbedPane1 = new JTabbedPane();
 						{
+							// TODO
 							jPanel2 = new JPanel();
 							jTabbedPane1.addTab("My Annotation", null, jPanel2, null);
+							jPanel2.setLayout(new GridLayout(Math.max(imagePanel.getNumberPolygon(), 5), 1));
+							jPanel2.setAutoscrolls(true);
+							
+							polyList = new List();
+							polyList.addMouseListener(new MouseListener(){
+
+								@Override
+								public void mouseClicked(MouseEvent e) {
+									
+									System.out.println(polyList.getSelectedIndex());
+								}
+								public void mouseEntered(MouseEvent e) {}
+								public void mouseExited(MouseEvent e) {}
+								public void mousePressed(MouseEvent e) {}
+								public void mouseReleased(MouseEvent e) {}
+								
+							});
+//							polyList.addActionListener(new ActionListener(){
+//								public void actionPerformed(ActionEvent e){
+//									System.out.println(polyList.getSelectedIndex());
+//								}
+//							});
+							jPanel2.add(polyList);
+							
 						}
 						{
 							jPanel3 = new JPanel();
@@ -229,6 +258,14 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public static void addToPolyList(String s){
+		polyList.add(s);
+	}
+	
+	public void brightPolyList(){
 		
 	}
 
