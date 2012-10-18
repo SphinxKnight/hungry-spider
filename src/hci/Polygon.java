@@ -28,7 +28,7 @@ public class Polygon extends Form{
 
 	@Override
 	public void drawForm(Graphics g1) {
-		if (listCoord != null){
+		if (listCoord.size() != 0){
 			int i;
 			for(i=0;i<listCoord.size()-1;i++){
 				g1.drawLine(listCoord.get(i).x,listCoord.get(i).y ,listCoord.get(i+1).x, listCoord.get(i+1).y);
@@ -75,6 +75,19 @@ public class Polygon extends Form{
 	
 	public void setListCoord(ArrayList<Point> pointList){
 		this.listCoord = pointList;
+	}
+
+	// if the polygon is not complete yet, we don't "close" it
+	public void drawPartPolygon(Graphics g) {
+		if (listCoord.size() != 0){
+			int i;
+			for(i=0;i<listCoord.size()-1;i++){
+				g.drawLine(listCoord.get(i).x,listCoord.get(i).y ,listCoord.get(i+1).x, listCoord.get(i+1).y);
+				g.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
+			}
+			//And the final vertex	
+			g.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
+		}
 	}
 	
 

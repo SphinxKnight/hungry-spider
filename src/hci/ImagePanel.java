@@ -95,15 +95,14 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		//display image
 		ShowImage();
-		
+				
 		//display all the completed polygons
 		for(Polygon polygon : polygonsList) {
 			drawPolygon(polygon);
 			finishPolygon(polygon);
 		}
-		
 		//display current polygon
-		drawPolygon(currentPolygon);
+		currentPolygon.drawPartPolygon(g);
 	}
 	
 	/**
@@ -130,7 +129,6 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			g.setColor(Color.GREEN);
 			g.drawLine((int) firstVertex.getX(),(int) firstVertex.getY(), (int) lastVertex.getX(),(int) lastVertex.getY());
 		}
-		System.out.println("finished !!");
 	}
 	
 	/**
