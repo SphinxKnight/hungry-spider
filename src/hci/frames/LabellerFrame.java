@@ -1,11 +1,13 @@
 package hci.frames;
 import hci.ImagePanel;
+import hci.Polygon;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.List;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -146,7 +148,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						{
 							// TODO
 							jPanel2 = new JPanel();
-							jTabbedPane1.addTab("My Annotation", null, jPanel2, null);
+							jTabbedPane1.addTab("My Labels", null, jPanel2, null);
 							jPanel2.setLayout(new GridLayout(Math.max(imagePanel.getNumberPolygon(), 5), 1));
 							jPanel2.setAutoscrolls(true);
 							
@@ -155,8 +157,10 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 								@Override
 								public void mouseClicked(MouseEvent e) {
-									
-									System.out.println(polyList.getSelectedIndex());
+
+									int index = polyList.getSelectedIndex();
+									imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
+//									brightPolyList(imageLocation(imagePanel));
 								}
 								public void mouseEntered(MouseEvent e) {}
 								public void mouseExited(MouseEvent e) {}
@@ -257,7 +261,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -265,8 +268,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		polyList.add(s);
 	}
 	
-	public void brightPolyList(){
-		
-	}
+
 
 }
