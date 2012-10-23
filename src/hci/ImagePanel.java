@@ -291,6 +291,8 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		Graphics g1 = this.getGraphics();
 		g1.setColor(poly.getColor());
+
+		paint(g1);
 		
 		Stroke stroke = new BasicStroke(3f);
 		((Graphics2D) g1).setStroke(stroke);
