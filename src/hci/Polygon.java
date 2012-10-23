@@ -13,14 +13,16 @@ public class Polygon extends Form{
 	public Polygon(String name, int id, Color color) {
 		super(name, id, color);
 		this.name = name;
+		
 		this.color = color;
 		this.id = id;
 		// TODO Auto-generated constructor stub
 	}
 	
+	
 	public Polygon(int id){
 		super(id);
-		this.name = "";
+		this.name = "Poly"+Integer.toString(id);
 		Color col=new Color((int)(Math.random()*256),
 				(int)(Math.random()*256),
 				(int)(Math.random()*256));
@@ -119,7 +121,15 @@ public class Polygon extends Form{
 			g.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
 		}
 	}
+
+	public void setName(String stringForPoly) {
+		this.name=stringForPoly;
+		
+	}
 	
+	public String getName() {
+		return name;
+	}
 
 	
 }

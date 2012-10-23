@@ -8,7 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class XMLwriter {
-		
+	
+	public static void writeHeader(FileWriter writer,String nameImage,String currCollec,int nrows, int ncols) throws IOException{
+		writer.append("<annotation>");
+		writer.append("<filename>"+nameImage+"</filename>");
+		writer.append("<folder>"+currCollec+"</folder>");
+		writer.append("<source><submittedBy>"+"</submittedBy></source>");
+		writer.append("<imagesize><nrows>"+Integer.toString(nrows)+"</nrows><ncols>"+Integer.toString(ncols)+"</ncols></imagesize>");
+	}
+	public static void writeFooter(FileWriter writer) throws IOException{
+		writer.append("</annotation>");
+	}
 	public static void writeOval(FileWriter writer, Oval oval) throws IOException{
 		writer.append("<object>");
 			writer.append("<name>"+oval.getName()+"</name>");
@@ -32,8 +42,9 @@ public class XMLwriter {
 	
 	public static void writePolygon(FileWriter writer, Polygon poly) throws IOException{
 		writer.append("<object>");
+		System.out.println(poly.getName());
 		writer.append("<name>"+poly.getName()+"</name>");
-		writer.append("<color>"+poly.getColor()+"</color>");
+		writer.append("<color>#"+Integer.toHexString(poly.getColor().getRed()).toUpperCase()+Integer.toHexString(poly.getColor().getGreen()).toUpperCase()+Integer.toHexString(poly.getColor().getBlue()).toUpperCase()+"</color>");
 		writer.append("<deleted>0</deleted>");
 		writer.append("<verified>0</verified>");
 		SimpleDateFormat d1 = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");

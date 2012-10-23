@@ -13,7 +13,9 @@ public class XMLParser {
 	private ArrayList<Form> listForm=new ArrayList<Form>();
 	private int[] sizeImage=new int[2];
 	
-	public void interpretFile(String fileName) throws FileNotFoundException{
+
+
+	public  void interpretFile(String fileName) throws FileNotFoundException{
 		Scanner scanFile = new Scanner(new File(fileName));
 		//Assume that docs only have one line (such as labelMe)
 		int nbRows = Integer.parseInt(scanFile.findInLine("(?<=<nrows>)[0-9]*(?=</nrows>)"));
@@ -26,10 +28,10 @@ public class XMLParser {
 			
 			Scanner scanObject = new Scanner(strObject);
 			String nameObject = scanObject.findInLine("(?<=<name>)[a-zA-Z_0-9]*(?=</name>)");
-			String colString=scanObject.findInLine("(?<=<color>)*(?=</color>)");
+			String colString=scanObject.findInLine("(?<=<color>#)[A-F_0-9]*(?=</color>)");
 			Color colorObject = null;
-			if(colString!=null){
-				colorObject = Color.decode(colString);
+			if(colString.length()>0){
+				colorObject = Color.decode("#"+colString);
 			}
 			int idObject =Integer.parseInt(scanObject.findInLine("(?<=<id>)[0-9]*(?=</id>)"));
 			String typeObject= scanObject.findInLine("(?<=<)[a-zA-Z_0-9]*?(?=>)");
@@ -37,7 +39,7 @@ public class XMLParser {
 				Polygon poly = new Polygon(nameObject,idObject,colorObject);
 				String strPoint = scanObject.findInLine("(?<=<pt>)(.*?)(?=(</pt>))");
 				while(strPoint!=null){
-					System.out.println(strPoint);
+//					System.out.println(strPoint);
 					Scanner scanObj = new Scanner(strPoint);
 					Point pt = new Point(Integer.parseInt(scanObj.findInLine("(?<=<x>)[0-9]*(?=</x>)")),
 								Integer.parseInt(scanObj.findInLine("(?<=<y>)[0-9]*(?=</y>)")));

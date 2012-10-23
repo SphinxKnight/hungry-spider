@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -47,9 +48,8 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	// default constructor, sets up the window properties
 	public ImagePanel() {
 		currentId = 0;
-		setCurrentPolygon(new Polygon(currentId));
+		this.currentPolygon = new Polygon(currentId);
 		polygonsList = new ArrayList<Polygon>();
-
 		this.setVisible(true);
 
 		Dimension panelSize = new Dimension(800, 600);
@@ -61,7 +61,37 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
-
+	public ImagePanel(String imageName, ArrayList<Form> formList) throws IOException {
+		this.polygonsList = new ArrayList<Polygon>();
+		for (Form form : formList) {
+			if(form instanceof Polygon){
+				this.polygonsList.add((Polygon) form);
+				LabellerFrame.addToPolyList(stringForPoly((Polygon) form));
+			}
+		}
+		currentId = polygonsList.size();
+		this.currentPolygon = new Polygon(currentId);
+		LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
+		this.setVisible(true);
+		
+		Dimension panelSize = new Dimension(800, 600);
+		this.setSize(panelSize);
+		this.setMinimumSize(panelSize);
+		this.setPreferredSize(panelSize);
+		this.setMaximumSize(panelSize);
+		
+		addMouseListener(this);
+		addMouseMotionListener(this);
+		image = ImageIO.read(new File(imageName));
+		if (image.getWidth() > 800 || image.getHeight() > 600) {
+			int newWidth = image.getWidth() > 800 ? 800 : (image.getWidth() * 600)/image.getHeight();
+			int newHeight = image.getHeight() > 600 ? 600 : (image.getHeight() * 800)/image.getWidth();
+			System.out.println("SCALING TO " + newWidth + "x" + newHeight );
+			Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+			image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+			image.getGraphics().drawImage(scaledImage,0,0,  this);
+		}
+	}
 	
 	/**
 	 * extended constructor - loads image to be labeled
@@ -88,8 +118,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		Graphics g = this.getGraphics();
 		
 		if (image != null) {
-			g.drawImage(
-					image,0,0, this);
+			g.drawImage(image,0,0, this);
 		}
 	}
 	
@@ -143,13 +172,13 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			finishPolygon(currentPolygon);
 			polygonsList.add(currentPolygon);
 		}
-
-		
 		currentId++;
-		setCurrentPolygon(new Polygon(currentId));
-		
-		// refresh the polygon panel on the right side
-		LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
+		if(currentPolygon.getListCoord().size()>0){
+			setCurrentPolygon(new Polygon(currentId));
+			// 	refresh the polygon panel on the right side
+			LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
+		}
+			
 		
 	}
 
@@ -255,7 +284,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	
 	public String stringForPoly(Polygon polygon) {
 		String listText;
-		if (polygon.getName() != ""){
+		if (!polygon.getName().equals("")){
 			listText = "Polygon number "+polygon.getId() + "\n"
 						+polygon.getName();
 		}
