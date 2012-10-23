@@ -147,6 +147,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		// refresh the polygon panel on the right side
 		LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
+		
 	}
 
 	@Override

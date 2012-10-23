@@ -1,7 +1,10 @@
 package hci.frames;
+import com.cloudgarden.layout.AnchorConstraint;
+import com.cloudgarden.layout.AnchorLayout;
 import hci.ImagePanel;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -10,17 +13,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.LayoutStyle;
+import javax.swing.ListModel;
+import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -64,7 +71,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton3;
 	private JButton jButton2;
 	private JToggleButton jToggle1;
-	private static List polyList;
+	private static JList polyList = new JList();
+	private JList jList1;
 
 	private JPanel jPanel1;
 	ImagePanel imagePanel = null;
@@ -146,31 +154,43 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						{
 							// TODO
 							jPanel2 = new JPanel();
+							BorderLayout jPanel2Layout = new BorderLayout();
+							jPanel2.setLayout(jPanel2Layout);
 							jTabbedPane1.addTab("My Annotation", null, jPanel2, null);
 							jPanel2.setLayout(new GridLayout(Math.max(imagePanel.getNumberPolygon(), 5), 1));
 							jPanel2.setAutoscrolls(true);
 							
-							polyList = new List();
-							polyList.addMouseListener(new MouseListener(){
-
-								@Override
-								public void mouseClicked(MouseEvent e) {
-									
-									System.out.println(polyList.getSelectedIndex());
-								}
-								public void mouseEntered(MouseEvent e) {}
-								public void mouseExited(MouseEvent e) {}
-								public void mousePressed(MouseEvent e) {}
-								public void mouseReleased(MouseEvent e) {}
-								
-							});
+//
+//							polyList.addMouseListener(new MouseListener(){
+//
+//								@Override
+//								public void mouseClicked(MouseEvent e) {
+//									
+//									System.out.println(polyList.getSelectedIndex());
+//								}
+//								public void mouseEntered(MouseEvent e) {}
+//								public void mouseExited(MouseEvent e) {}
+//								public void mousePressed(MouseEvent e) {}
+//								public void mouseReleased(MouseEvent e) {}
+//								
+//							});
 //							polyList.addActionListener(new ActionListener(){
 //								public void actionPerformed(ActionEvent e){
 //									System.out.println(polyList.getSelectedIndex());
 //								}
 //							});
-							jPanel2.add(polyList);
-							
+//							jPanel2.add(polyList, BorderLayout.CENTER);
+//							polyList.setPreferredSize(new java.awt.Dimension(0, 0));
+							{
+								ListModel jList1Model = 
+										new DefaultComboBoxModel(
+												new String[] { });
+								polyList = new JList();
+								jPanel2.add(polyList, BorderLayout.NORTH);
+								polyList.setModel(jList1Model);
+								polyList.setPreferredSize(new java.awt.Dimension(66, 38));
+							}
+
 						}
 						{
 							jPanel3 = new JPanel();
@@ -187,9 +207,10 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						}
 					}
 					{
-						jButton5 = new JButton(new ImageIcon("test.jpeg",
+						jButton5 = new JButton(new ImageIcon("test.png",
                                 "move polygon/oval"));
 						jButton5.setOpaque(true);
+						
 
 					}
 					{
@@ -262,7 +283,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	}
 	
 	public static void addToPolyList(String s){
-		polyList.add(s);
+		ListModel currentModel = polyList.getModel();
+		((DefaultComboBoxModel) currentModel).addElement(s);
 	}
 	
 	public void brightPolyList(){
