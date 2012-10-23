@@ -175,21 +175,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 //							});
 
 //							polyList = new List();
-							polyList.addMouseListener(new MouseListener(){
-
-								@Override
-								public void mouseClicked(MouseEvent e) {
-
-									int index = polyList.getSelectedIndex();
-									imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
-//									brightPolyList(imageLocation(imagePanel));
-								}
-								public void mouseEntered(MouseEvent e) {}
-								public void mouseExited(MouseEvent e) {}
-								public void mousePressed(MouseEvent e) {}
-								public void mouseReleased(MouseEvent e) {}
-								
-							});
+							
 
 //							polyList.addActionListener(new ActionListener(){
 //								public void actionPerformed(ActionEvent e){
@@ -203,6 +189,22 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										new DefaultComboBoxModel(
 												new String[] { });
 								polyList = new JList();
+								polyList.addMouseListener(new MouseListener(){
+
+									@Override
+									public void mouseClicked(MouseEvent e) {
+
+										int index = polyList.getSelectedIndex();
+										System.out.println(index);
+										imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
+//										brightPolyList(imageLocation(imagePanel));
+									}
+									public void mouseEntered(MouseEvent e) {}
+									public void mouseExited(MouseEvent e) {}
+									public void mousePressed(MouseEvent e) {}
+									public void mouseReleased(MouseEvent e) {}
+									
+								});
 								jPanel2.add(polyList, BorderLayout.NORTH);
 								polyList.setModel(jList1Model);
 								polyList.setPreferredSize(new java.awt.Dimension(66, 38));
