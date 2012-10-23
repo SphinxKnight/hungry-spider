@@ -1,8 +1,11 @@
 package hci;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.util.ArrayList;
 
 public class Polygon extends Form{
@@ -11,6 +14,7 @@ public class Polygon extends Form{
 		super(name, id, color);
 		this.name = name;
 		this.color = color;
+		this.id = id;
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -42,6 +46,29 @@ public class Polygon extends Form{
 			g1.fillOval(listCoord.get(i).x-5,listCoord.get(i).y-5,10,10);
 		}
 	}
+	
+	public void drawThick2(Graphics g1, Point p){
+		
+		Stroke stroke = new BasicStroke(3f);
+		((Graphics2D) g1).setStroke(stroke);
+		g1.setColor(this.color);
+		
+		int decalX = p.x;
+		int decalY = p.y;
+
+		if (listCoord.size() != 0){
+			int i;
+			for(i=0;i<listCoord.size()-1;i++){
+				g1.drawLine(listCoord.get(i).x + decalX,listCoord.get(i).y + decalY ,listCoord.get(i+1).x + decalX, listCoord.get(i+1).y + decalY);
+				g1.fillOval(listCoord.get(i).x + decalX -5,listCoord.get(i).y + decalY -5,10,10);
+			}
+			//And the final one
+			g1.drawLine(listCoord.get(i).x + decalX,listCoord.get(i).y + decalY ,listCoord.get(0).x + decalX, listCoord.get(0).y + decalY);	
+			g1.fillOval(listCoord.get(i).x + decalX-5,listCoord.get(i).y + decalY-5,10,10);
+		}
+	}
+	
+	
 	
 	// tests if p is a vertex of the polygon, with a margin of 5 pixels
 	public int isInPolygon(Point p){

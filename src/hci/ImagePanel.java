@@ -2,11 +2,13 @@ package hci;
 
 import hci.frames.LabellerFrame;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -141,6 +143,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			finishPolygon(currentPolygon);
 			polygonsList.add(currentPolygon);
 		}
+
 		
 		currentId++;
 		setCurrentPolygon(new Polygon(currentId));
@@ -282,6 +285,31 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	public ArrayList<Polygon> getPolygonsList() {
 		return polygonsList;
+	}
+	
+	public void drawThick(Polygon poly, Point p){
+		
+		Graphics g1 = this.getGraphics();
+		g1.setColor(poly.getColor());
+
+		paint(g1);
+		
+		Stroke stroke = new BasicStroke(3f);
+		((Graphics2D) g1).setStroke(stroke);
+		
+		int decalX = p.x;
+		int decalY = p.y;
+
+		if (poly.getSize() != 0){
+			int i;
+			for(i=0;i<poly.getSize()-1;i++){
+				g1.drawLine(poly.getListCoord().get(i).x + decalX,poly.getListCoord().get(i).y + decalY ,poly.getListCoord().get(i+1).x + decalX, poly.getListCoord().get(i+1).y + decalY);
+				g1.fillOval(poly.getListCoord().get(i).x + decalX -5,poly.getListCoord().get(i).y + decalY -5,10,10);
+			}
+			//And the final one
+			g1.drawLine(poly.getListCoord().get(i).x + decalX,poly.getListCoord().get(i).y + decalY ,poly.getListCoord().get(0).x + decalX,poly.getListCoord().get(0).y + decalY);	
+			g1.fillOval(poly.getListCoord().get(i).x + decalX-5,poly.getListCoord().get(i).y + decalY-5,10,10);
+		}
 	}
 	
 }
