@@ -6,9 +6,11 @@ import hci.Polygon;
 import hci.XMLwriter;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -24,6 +26,7 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -78,6 +81,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton2;
 	private JToggleButton jToggle1;
 	private static JList polyList = new JList();
+	private JButton jButton8;
 	private JButton jButton7;
 	private JButton jButton6;
 	private JPanel jPanel1;
@@ -85,6 +89,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private String currentCollection = "CollecTest1";
 	private String currentImage = "test.jpeg";
 	private static boolean saveNeeded = false;
+	private int lastSelected = 0;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -161,6 +166,22 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						}
 					}
 					{
+						jButton8 = new JButton();
+						jButton8.setText("Color");
+						jButton8.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+								Color newPolyColor = JColorChooser.showDialog(null, "Choose a new polygon's color", null);
+								//(imagePanel.getPolygonsList().get(lastSelected)).setColor(newPolyColor);
+								imagePanel.setPolyColor(lastSelected, newPolyColor);
+//								System.out.println(imagePanel.getPolygonsList().get(lastSelected).getColor());
+//								System.out.println(newPolyColor);
+								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+								g.setColor(newPolyColor);
+								imagePanel.paint(g);
+				            }
+				        });   
+					}
+					{
 						jTabbedPane1 = new JTabbedPane();
 						{
 							// TODO
@@ -210,6 +231,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									public void mouseClicked(MouseEvent e) {
 										
 										int index = polyList.getSelectedIndex();
+										lastSelected = index;
 										System.out.println(index);
 										imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
 										//										brightPolyList(imageLocation(imagePanel));
@@ -261,34 +283,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jButton1.setText("jButton1");
 					}
 
-					jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
-						.addContainerGap(70, 70)
-						.addGroup(jPanel1Layout.createParallelGroup()
-						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addComponent(jPanel4, 0, 622, Short.MAX_VALUE)
-						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						            .addComponent(jButton3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-						        .addGap(25))
-						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(125)
-						        .addGroup(jPanel1Layout.createParallelGroup()
-						            .addGroup(jPanel1Layout.createSequentialGroup()
-						                .addGap(0, 0, Short.MAX_VALUE)
-						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE))
-						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						                .addGap(20)
-						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						                .addComponent(jButton7, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						                .addGap(0, 10, Short.MAX_VALUE)
-						                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						                    .addComponent(jButton4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-						                    .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
-						                .addGap(419))))));
-					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 					jPanel1Layout.setHorizontalGroup(jPanel1Layout.createSequentialGroup()
 						.addContainerGap()
 						.addComponent(jButton4, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
@@ -303,16 +297,54 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						        .addGap(116)
 						        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						        .addGap(90)
-						        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
+						        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addGap(42)))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-						.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-						    .addComponent(jButton6, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-						    .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 34, Short.MAX_VALUE))
+						.addGap(62)
+						.addGroup(jPanel1Layout.createParallelGroup()
+						    .addGroup(jPanel1Layout.createSequentialGroup()
+						        .addGap(0, 0, Short.MAX_VALUE)
+						        .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
+						    .addGroup(jPanel1Layout.createSequentialGroup()
+						        .addGap(23)
+						        .addGroup(jPanel1Layout.createParallelGroup()
+						            .addGroup(jPanel1Layout.createSequentialGroup()
+						                .addGap(0, 0, Short.MAX_VALUE)
+						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						            .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 41, Short.MAX_VALUE))))
 						.addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE));
-					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton7, jButton6});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton5, jButton4});
+					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton7, jButton6});
+					jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
+						.addContainerGap(69, 69)
+						.addGroup(jPanel1Layout.createParallelGroup()
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jPanel4, 0, 622, Short.MAX_VALUE)
+						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						            .addComponent(jButton3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+						        .addGap(25))
+						    .addGroup(jPanel1Layout.createSequentialGroup()
+						        .addGap(126)
+						        .addGroup(jPanel1Layout.createParallelGroup()
+						            .addGroup(jPanel1Layout.createSequentialGroup()
+						                .addGap(0, 0, Short.MAX_VALUE)
+						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE))
+						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						                .addGap(19)
+						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						                .addComponent(jButton7, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+						                .addGap(11)
+						                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						                    .addComponent(jButton4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						                    .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						                    .addComponent(jButton8, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
+						                .addGap(419))))));
+					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 				}
 			}
 			pack();

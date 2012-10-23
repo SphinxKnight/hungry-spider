@@ -3,6 +3,7 @@ package hci;
 import hci.frames.LabellerFrame;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -340,5 +341,15 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			g1.fillOval(poly.getListCoord().get(i).x + decalX-5,poly.getListCoord().get(i).y + decalY-5,10,10);
 		}
 	}
+	
+	public void setPolyColor(int i, Color color){
+		polygonsList.get(i).setColor(color);
+	}
+	
+	
+	
+	
+	
+	
 	
 }

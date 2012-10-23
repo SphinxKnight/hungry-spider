@@ -37,6 +37,7 @@ public class Polygon extends Form{
 
 	@Override
 	public void drawForm(Graphics g1) {
+		g1.setColor(color);
 		if (listCoord.size() != 0){
 			int i;
 			for(i=0;i<listCoord.size()-1;i++){
@@ -53,7 +54,7 @@ public class Polygon extends Form{
 		
 		Stroke stroke = new BasicStroke(3f);
 		((Graphics2D) g1).setStroke(stroke);
-		g1.setColor(this.color);
+		g1.setColor(color);
 		
 		int decalX = p.x;
 		int decalY = p.y;
@@ -129,6 +130,17 @@ public class Polygon extends Form{
 	
 	public String getName() {
 		return name;
+	}
+
+
+	public void setColor(Color newColor) {
+		this.color = newColor;
+		System.out.println(newColor);
+		System.out.println(this.color);
+	}
+	
+	public Color getColor(){
+		return color;
 	}
 
 	

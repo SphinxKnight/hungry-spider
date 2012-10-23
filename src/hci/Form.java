@@ -39,4 +39,8 @@ public abstract class Form {
 		return id;
 	}
 	
+	public void setColor(Color newColor) {
+		this.color = newColor;
+	}
+	
 }
