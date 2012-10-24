@@ -1,5 +1,6 @@
 package hci.frames;
 import hci.CollectionUtils;
+import hci.CopyFile;
 import hci.Form;
 import hci.ImagePanel;
 import hci.Polygon;
@@ -28,6 +29,7 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,10 +44,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
@@ -309,7 +311,28 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jButton3.setLayout(null);
 									jButton3.setText("+Im");
 									jButton3.setPreferredSize(new java.awt.Dimension(37, 25));
-								
+									jButton3.addActionListener(new ActionListener() {
+										
+										@Override
+										public void actionPerformed(ActionEvent arg0) {
+											final JFileChooser fc = new JFileChooser();
+											int returnVal = fc.showOpenDialog(jPanel1);
+											 if (returnVal == JFileChooser.APPROVE_OPTION) {
+										            File file = fc.getSelectedFile();
+										        	DefaultTreeModel d2 = (DefaultTreeModel) jTree1.getModel();
+										            File dest = new File("./MyCollections/"+currentCollection+"/"+file.getName());
+										            CopyFile.copyfile(file.getAbsolutePath(),dest.getAbsolutePath());
+										            TreePath path = jTree1.getNextMatch(currentCollection, 0, Position.Bias.Forward);
+										            MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
+										            d2.insertNodeInto(new DefaultMutableTreeNode(dest.getName()), node,node.getChildCount());
+										            
+										        } else {
+										            
+										        }
+											
+										}
+									
+									});
 								}
 								{	//delete an image
 									jButton11 = new JButton();
