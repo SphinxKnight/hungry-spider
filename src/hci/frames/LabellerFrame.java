@@ -249,7 +249,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									imagePanel.getPolygonsList().remove(lastSelected);
 									Graphics2D g = (Graphics2D)imagePanel.getGraphics();
 									imagePanel.paint(g);
-									System.out.println("yes");
 									if (imagePanel.getNumberPolygon()==0){
 										jButton9.setEnabled(false);
 										jButton10.setEnabled(false);
@@ -277,15 +276,11 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								                    possibilities,
 								                    "");
 
-								//If a string was returned, say so.
 								if ((s != null) && (s.length() > 0)) {
 								    imagePanel.getPolygonsList().get(lastSelected).setName(s);
 								    polyList.setSelectedIndex(lastSelected);
 								    editPolyList(imagePanel.stringForPoly(imagePanel.getPolygonsList().get(lastSelected)));
 								}
-//
-//								//If you're here, the return value was null/empty.
-//								setLabel("Come on, finish the sentence!");
 				            }
 				        });       
 					}
@@ -446,6 +441,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		return saveNeeded;
 	}
 
+	@SuppressWarnings("static-access")
 	public void setSaveNeeded(boolean saveNeeded) {
 		this.saveNeeded = saveNeeded;
 	}
@@ -471,6 +467,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		this.repaint();
 	}
 
+	@SuppressWarnings("static-access")
 	public void save(){
 		ArrayList<Polygon> listPoly = imagePanel.getPolygonsList();
 		File xmlSave=new File("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");

@@ -33,6 +33,7 @@ public class Polygon extends Form{
 	private String name;
 	private ArrayList<Point> listCoord=new ArrayList<Point>();
 	private Color color;
+	@SuppressWarnings("unused")
 	private int id;
 
 	@Override

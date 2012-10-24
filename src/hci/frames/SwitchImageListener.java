@@ -2,7 +2,6 @@ package hci.frames;
 
 import hci.Form;
 import hci.ImagePanel;
-import hci.Polygon;
 import hci.XMLParser;
 
 import java.awt.event.ActionEvent;
