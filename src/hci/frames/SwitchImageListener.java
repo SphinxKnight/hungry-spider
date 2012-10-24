@@ -112,5 +112,13 @@ public class SwitchImageListener implements ActionListener {
 		
 		return;
 	}
+
+	public String getCurrentImage() {
+		return currentImage;
+	}
+
+	public void setCurrentImage(String currentImage) {
+		this.currentImage = currentImage;
+	}
 	
 }

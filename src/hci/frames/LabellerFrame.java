@@ -6,7 +6,6 @@ import hci.Polygon;
 import hci.XMLwriter;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -16,19 +15,14 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -46,9 +40,13 @@ import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -194,7 +192,17 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 							
 							@Override
 							public void mouseReleased(MouseEvent e) {
-								// TODO Auto-generated method stub
+								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+								
+								if(g!=null){
+									g.setColor(imagePanel.getCurrentPolygon().getColor());
+									imagePanel.paint(g);
+								}
+								else{
+									repaint();
+									imagePanel.repaint();
+								}
+								
 								
 							}
 							
@@ -309,35 +317,49 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jButton11.setText("-Im");
 									jButton11.setPreferredSize(new java.awt.Dimension(109, 25));
 									final SwitchImageListener s1 = new SwitchImageListener("right",imagePanel,this);
-									
+
 									jButton11.addActionListener(new ActionListener() {
 										public void actionPerformed(ActionEvent evt) {
 											//Image selected or current image ?
-											if(jTree1.getSelectionPath()==null){
-												int n = JOptionPane.showConfirmDialog(
-													    jPanel1,
-													    "You are about to delete the image \n"
-													    +currentImage+"\n"
-													    + "Continue ?",
-													    "Polygon deletion",
-													    JOptionPane.YES_NO_OPTION);
-												if (n==0){
-													String imageToDelete = currentImage;
-													s1.changeImage();
-													repaint();
-													File f1 = new File(".MyCollections/"+currentCollection+"/"+imageToDelete);
-													f1.delete();
-													File f2 = new File(".MyCollections/"+currentCollection+"/"+imageToDelete.split("\\.")[0]+".xml");
-													if(f2.isFile()){
-														f2.delete();
-													}
-													
-													saveNeeded = false;
-												}
-											
-											}
+											DefaultTreeModel d2 = (DefaultTreeModel) jTree1.getModel();
+//											if(jTree1.getSelectionPath()==null){
+//												//Deleting current image
+//												int n = JOptionPane.showConfirmDialog(
+//													    jPanel1,
+//													    "You are about to delete the image \n"
+//													    +currentImage+"\n"
+//													    + "Continue ?",
+//													    "Polygon deletion",
+//													    JOptionPane.YES_NO_OPTION);
+//												if (n==0){
+//													String imageToDelete = new String(currentImage);
+//													s1.setCurrentImage(currentImage);
+//													s1.changeImage();
+//													
+//													File f1 = new File("./MyCollections/"+currentCollection+"/"+imageToDelete);
+//													f1.delete();
+//													File f2 = new File("./MyCollections/"+currentCollection+"/"+imageToDelete.split("\\.")[0]+".xml");
+//													if(f2.isFile()){
+//														f2.delete();
+//													}
+//													DefaultMutableTreeNode root = new DefaultMutableTreeNode("root", true);
+//													DefaultMutableTreeNode coll = new DefaultMutableTreeNode("MyCollections");
+//													DefaultMutableTreeNode collCurr = new DefaultMutableTreeNode(currentCollection);
+//													DefaultMutableTreeNode imgCurr = new DefaultMutableTreeNode(imageToDelete);
+//													collCurr.add(imgCurr);
+//													coll.add(collCurr);
+//													root.add(coll);
+//													jTree1.setSelectionPath(new TreePath(imgCurr.getPath()));
+//													System.out.println(jTree1.getSelectionPath());
+//													MutableTreeNode node1 =(MutableTreeNode) jTree1.getSelectionPath().getLastPathComponent();
+//													System.out.println(jTree1);
+//													d2.removeNodeFromParent(node1);
+//													saveNeeded = false;
+//												}
+//											
+//											}
 											//Image selected
-											else{
+//											else{
 												int n = JOptionPane.showConfirmDialog(
 													    jPanel1,
 													    "You are about to delete the image \n"
@@ -346,11 +368,13 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 													    "Polygon deletion",
 													    JOptionPane.YES_NO_OPTION);
 												//If selection is currimage in currcollection
-												
+												System.out.println(jTree1.getSelectionPath());
+												MutableTreeNode node1 =(MutableTreeNode) jTree1.getSelectionPath().getLastPathComponent();
 												String node =jTree1.getSelectionPath().getLastPathComponent().toString();
 												String collecTree = jTree1.getSelectionPath().getPathComponent(2).toString();
 												if(n==0){
 													if((currentImage.equals(node))&&(currentCollection.equals(collecTree))){
+														s1.setCurrentImage(currentImage);
 														s1.changeImage();
 														File f1 = new File("./MyCollections/"+collecTree+"/"+node);
 														f1.delete();
@@ -358,6 +382,9 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 														if(f2.isFile()){
 															f2.delete();
 														}
+														System.out.println(node1.getClass());
+														
+														d2.removeNodeFromParent(node1);
 														saveNeeded = false;
 													}
 													else{
@@ -367,16 +394,20 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 														if(f2.isFile()){
 															f2.delete();
 														}
-														saveNeeded = false;
+														d2.removeNodeFromParent(node1);
+														
+														
 													}
 													
 												
-												//else
+												
 												}
-											}
-									
-										repaint();
-										jTree1 = CollectionUtils.getTreeCollections(); 
+//											}
+										//Update JTree
+										d2.reload();
+										
+										
+										jTree1.expandRow(0);
 										}
 									});
 								}

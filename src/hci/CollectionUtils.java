@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 public class CollectionUtils {
 
@@ -21,11 +22,13 @@ public class CollectionUtils {
 	    }
 	    getList(root, new File("./MyCollections"));
 	    JTree tree = new JTree(root);
+	    tree.setModel(new DefaultTreeModel(root));
 	    tree.setLayout(new BorderLayout());
 	    tree.setRootVisible(false);
 	    tree.expandRow(0);
 		return tree;
 	}
+	
 
 
 	public static void getList(DefaultMutableTreeNode node, File f) {
