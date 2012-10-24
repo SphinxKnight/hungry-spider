@@ -6,6 +6,7 @@ import hci.Polygon;
 import hci.XMLwriter;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -15,14 +16,19 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -40,7 +46,9 @@ import javax.swing.ListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
+import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -81,11 +89,14 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton2;
 	private JToggleButton jToggle1;
 	private static JList polyList = new JList();
+	private JButton jButton13;
+	private JButton jButton12;
+	private JButton jButton11;
+	private JButton jButton3;
+	private JPanel jPanel5;
 	private static JButton jButton10;
 	private static JButton jButton9;
 	private JButton jButton8;
-	private JButton jButton7;
-	private JButton jButton6;
 	private JPanel jPanel1;
 	private ImagePanel imagePanel;
 	private String currentCollection = "CollecTest1";
@@ -179,6 +190,61 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 					}
 					{
 						jTabbedPane1 = new JTabbedPane();
+						jTabbedPane1.addMouseListener(new MouseListener() {
+							
+							@Override
+							public void mouseReleased(MouseEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void mousePressed(MouseEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void mouseExited(MouseEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void mouseEntered(MouseEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+								
+								if(g!=null){
+									g.setColor(imagePanel.getCurrentPolygon().getColor());
+									imagePanel.paint(g);
+								}
+								else{
+									repaint();
+									imagePanel.repaint();
+								}
+								
+							}
+						});
+						jTabbedPane1.addChangeListener(new ChangeListener() {
+							public void stateChanged(ChangeEvent evt) {
+								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+								
+								if(g!=null){
+									g.setColor(imagePanel.getCurrentPolygon().getColor());
+									imagePanel.paint(g);
+								}
+								else{
+									repaint();
+									imagePanel.repaint();
+								}
+							}
+						});
 						{
 							jPanel2 = new JPanel();
 							jTabbedPane1.addTab("My Labels", null, jPanel2, null);
@@ -218,13 +284,175 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 							jTabbedPane1.addTab("My Collection", null, jPanel3, null);
 							BorderLayout jPanel3Layout = new BorderLayout();
 							jPanel3.setLayout(jPanel3Layout);
+							
+							{
+								jPanel5 = new JPanel();
+								GridLayout jPanel5Layout = new GridLayout(1, 1);
+								jPanel5Layout.setHgap(5);
+								jPanel5Layout.setVgap(5);
+								jPanel5Layout.setColumns(1);
+								jPanel5.setLayout(jPanel5Layout);
+								jPanel3.add(jPanel5, BorderLayout.NORTH);
+								jPanel5.setPreferredSize(new java.awt.Dimension(270, 58));
+								{
+									//add an image
+									jButton3 = new JButton();
+									jPanel5.add(jButton3);
+									jButton3.setLayout(null);
+									jButton3.setText("+Im");
+									jButton3.setPreferredSize(new java.awt.Dimension(37, 25));
+								
+								}
+								{	//delete an image
+									jButton11 = new JButton();
+									jPanel5.add(jButton11);
+									jButton11.setText("-Im");
+									jButton11.setPreferredSize(new java.awt.Dimension(109, 25));
+									final SwitchImageListener s1 = new SwitchImageListener("right",imagePanel,this);
+									
+									jButton11.addActionListener(new ActionListener() {
+										public void actionPerformed(ActionEvent evt) {
+											//Image selected or current image ?
+											if(jTree1.getSelectionPath()==null){
+												int n = JOptionPane.showConfirmDialog(
+													    jPanel1,
+													    "You are about to delete the image \n"
+													    +currentImage+"\n"
+													    + "Continue ?",
+													    "Polygon deletion",
+													    JOptionPane.YES_NO_OPTION);
+												if (n==0){
+													String imageToDelete = currentImage;
+													s1.changeImage();
+													repaint();
+													File f1 = new File(".MyCollections/"+currentCollection+"/"+imageToDelete);
+													f1.delete();
+													File f2 = new File(".MyCollections/"+currentCollection+"/"+imageToDelete.split("\\.")[0]+".xml");
+													if(f2.isFile()){
+														f2.delete();
+													}
+													
+													saveNeeded = false;
+												}
+											
+											}
+											//Image selected
+											else{
+												int n = JOptionPane.showConfirmDialog(
+													    jPanel1,
+													    "You are about to delete the image \n"
+													    +jTree1.getSelectionPath().getLastPathComponent()+"\n"
+													    + "Continue ?",
+													    "Polygon deletion",
+													    JOptionPane.YES_NO_OPTION);
+												//If selection is currimage in currcollection
+												
+												String node =jTree1.getSelectionPath().getLastPathComponent().toString();
+												String collecTree = jTree1.getSelectionPath().getPathComponent(2).toString();
+												if(n==0){
+													if((currentImage.equals(node))&&(currentCollection.equals(collecTree))){
+														s1.changeImage();
+														File f1 = new File("./MyCollections/"+collecTree+"/"+node);
+														f1.delete();
+														File f2 = new File("./MyCollections/"+collecTree+"/"+node.split("\\.")[0]+".xml");
+														if(f2.isFile()){
+															f2.delete();
+														}
+														saveNeeded = false;
+													}
+													else{
+														File f1 = new File("./MyCollections/"+collecTree+"/"+node);
+														f1.delete();
+														File f2 = new File("./MyCollections/"+collecTree+"/"+node.split("\\.")[0]+".xml");
+														if(f2.isFile()){
+															f2.delete();
+														}
+														saveNeeded = false;
+													}
+													
+												
+												//else
+												}
+											}
+									
+										repaint();
+										jTree1 = CollectionUtils.getTreeCollections(); 
+										}
+									});
+								}
+								{	//add a collection
+									jButton12 = new JButton();
+									jPanel5.add(jButton12);
+									jButton12.setText("+Col");
+									jButton12.setPreferredSize(new java.awt.Dimension(37, 25));
+								}
+								{	//remove a collection
+									jButton13 = new JButton();
+									jPanel5.add(jButton13);
+									jButton13.setText("-Col");
+									jButton13.setPreferredSize(new java.awt.Dimension(37, 25));
+								}
+							}
 							{
 								jTree1 = new JTree();
 								jTree1 = CollectionUtils.getTreeCollections();
+								jPanel3.add(jTree1, BorderLayout.CENTER);
 								BorderLayout jTree1Layout = new BorderLayout();
 								jTree1.setLayout(jTree1Layout);
-								jPanel3.add(jTree1, BorderLayout.CENTER);
-								jTree1.setPreferredSize(new java.awt.Dimension(166, 234));
+								jTree1.setPreferredSize(new java.awt.Dimension(270, 482));
+								jTree1.addMouseListener(new MouseListener() {
+									
+									@Override
+									public void mouseReleased(MouseEvent arg0) {
+										Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+										
+										if(g!=null){
+											g.setColor(imagePanel.getCurrentPolygon().getColor());
+											imagePanel.paint(g);
+										}
+										
+									}
+									
+									@Override
+									public void mousePressed(MouseEvent arg0) {
+										Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+										
+										if(g!=null){
+											g.setColor(imagePanel.getCurrentPolygon().getColor());
+											imagePanel.paint(g);
+										}
+										
+									}
+									
+									@Override
+									public void mouseExited(MouseEvent arg0) {
+										// TODO Auto-generated method stub
+										
+									}
+									
+									@Override
+									public void mouseEntered(MouseEvent arg0) {
+										Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+										
+										if(g!=null){
+											g.setColor(imagePanel.getCurrentPolygon().getColor());
+											imagePanel.paint(g);
+										}
+										
+									}
+									
+									@Override
+									public void mouseClicked(MouseEvent arg0) {
+										Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+										
+										if(g!=null){
+											g.setColor(imagePanel.getCurrentPolygon().getColor());
+											imagePanel.paint(g);
+										}
+									}
+								
+								});
+
 							}
 						}
 					}
@@ -281,14 +509,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 				        });       
 					}
 					{
-						jButton6 = new JButton();
-						jButton6.setText("+");
-					}
-					{
-						jButton7 = new JButton();
-						jButton7.setText("-");
-					}
-					{
 						jButton5 = new JButton();
 						jButton5.setOpaque(true);
 						jButton5.setText(">");
@@ -336,52 +556,36 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						.addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						.addGroup(jPanel1Layout.createParallelGroup()
-						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						        .addGap(0, 11, Short.MAX_VALUE))
-						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-						        .addGap(0, 11, Short.MAX_VALUE))
-						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-						        .addGap(0, 11, Short.MAX_VALUE))
-						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(35)
-						        .addGroup(jPanel1Layout.createParallelGroup()
-						            .addGroup(jPanel1Layout.createSequentialGroup()
-						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
-						                .addGap(0, 0, Short.MAX_VALUE))
-						            .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 45, Short.MAX_VALUE))))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						    .addComponent(jButton8, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(jButton9, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(jButton10, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGap(0, 17, Short.MAX_VALUE)
 						.addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE));
-					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton6, jButton7});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton8, jButton9, jButton10});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton5, jButton4});
 					jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
-						.addContainerGap(11, 11)
+						.addContainerGap(10, 10)
 						.addGroup(jPanel1Layout.createParallelGroup()
 						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
 						        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
-						        .addGap(0, 39, Short.MAX_VALUE)
+						        .addGap(0, 40, Short.MAX_VALUE)
 						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
 						        .addGap(35))
 						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(155)
+						        .addGap(156)
 						        .addGroup(jPanel1Layout.createParallelGroup()
-						            .addGroup(jPanel1Layout.createSequentialGroup()
+						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
 						                .addGap(0, 0, Short.MAX_VALUE)
 						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE))
 						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						                .addGap(26)
-						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						                .addGap(59)
 						                .addGroup(jPanel1Layout.createParallelGroup()
-						                    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						                        .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-						                        .addComponent(jButton7, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+						                    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						                        .addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						                        .addGap(14))
 						                    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
 						                        .addGap(14)
 						                        .addComponent(jButton4, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
@@ -391,7 +595,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						                .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
 						                .addGap(0, 329, Short.MAX_VALUE))))));
-					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton6, jButton8, jButton9, jButton10});
+					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton8, jButton9, jButton10});
 					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 				}
 			}
@@ -485,6 +689,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		for (Form polygon : listForm) {
 			((DefaultComboBoxModel) currentModel).addElement(polygon.getName());
 		}
+		
 		polyList.repaint();
 		imagePanel.repaint();
 		this.repaint();
