@@ -76,9 +76,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 				LabellerFrame.addToPolyList(stringForPoly((Polygon) form));
 			}
 		}
-		currentId = polygonsList.size();
+		//currentId = polygonsList.size();
 		this.currentPolygon = new Polygon(currentId);
-		LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
+		LabellerFrame.addToPolyList((currentPolygon.getName()));
 		this.setVisible(true);
 		
 		Dimension panelSize = new Dimension(800, 600);
@@ -176,13 +176,13 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		if (currentPolygon != null ) {
 			finishPolygon(currentPolygon);
 			polygonsList.add(currentPolygon);
+			// 	refresh the polygon panel on the right side
+			LabellerFrame.addToPolyList((currentPolygon.getName()));
 		}
 		currentId++;
 		if(currentPolygon.getListCoord().size()>0){
 			setCurrentPolygon(new Polygon(currentId));
 			LabellerFrame.setEnableCurrPolyButtons(false);
-			// 	refresh the polygon panel on the right side
-			LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
 		}
 		
 		
@@ -297,11 +297,11 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		
 		for (Polygon polygon:polygonsList){
 			if (polygon.isInPolygon(e.getPoint())>=0){
-				//TODO
 				drawThick(polygon);
 				oneOfVertex = true;
 				Graphics g = this.getGraphics();
-				g.drawImage(textToImage(stringForPoly(polygon)), e.getX(), e.getY()-12, null);
+				g.drawImage(textToImage(polygon.getName()), e.getX(), e.getY()-12, null);
+				//g.drawImage(textToImage(stringForPoly(polygon)), e.getX(), e.getY()-12, null);
 			}
 		}
 		vertex = oneOfVertex;

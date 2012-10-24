@@ -16,6 +16,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -272,7 +274,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										imagePanel.drawThick( polySelected);
 										Point labelPoint = polySelected.getListCoord().get(0);
 										Graphics g = imagePanel.getGraphics();
-										g.drawImage((Image)imagePanel.textToImage(imagePanel.stringForPoly(polySelected)), (int)labelPoint.getX()+5, (int)labelPoint.getY()-12-5, null);
+										g.drawImage((Image)imagePanel.textToImage(polySelected.getName()), (int)labelPoint.getX()+5, (int)labelPoint.getY()-12-5, null);
 									}
 									public void mouseEntered(MouseEvent e) {}
 									public void mouseExited(MouseEvent e) {}
@@ -280,6 +282,29 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									public void mouseReleased(MouseEvent e) {}
 									
 								});
+								
+								polyList.addKeyListener(new KeyListener(){
+									
+									public void keyPressed(KeyEvent arg0) {}
+									public void keyReleased(KeyEvent arg0) {}
+
+									@Override
+									public void keyTyped(KeyEvent k) {;
+								        if (k.getKeyCode() == KeyEvent.VK_DELETE){
+								        	removeFromPolyList(polyList.getSelectedIndex());
+											Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+											imagePanel.paint(g);
+											if (imagePanel.getNumberPolygon()==0){
+												jButton8.setEnabled(false);
+												jButton9.setEnabled(false);
+												jButton10.setEnabled(false);
+											}
+											lastSelected = Math.min(lastSelected, imagePanel.getNumberPolygon()-1);
+											polyList.setSelectedIndex(lastSelected);
+										}
+									}
+								});
+								
 								polyList.setModel(jList1Model);
 								polyList.setPreferredSize(new java.awt.Dimension(270, 480));
 							}
@@ -612,7 +637,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jButton9.setEnabled(false);
 						jButton9.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e){
-				                //TODO
 								Object[] possibilities = null;
 								String s = (String)JOptionPane.showInputDialog(
 								                    jPanel1,
@@ -626,7 +650,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								if ((s != null) && (s.length() > 0)) {
 								    imagePanel.getPolygonsList().get(lastSelected).setName(s);
 								    polyList.setSelectedIndex(lastSelected);
-								    editPolyList(imagePanel.stringForPoly(imagePanel.getPolygonsList().get(lastSelected)));
+								    editPolyList((imagePanel.getPolygonsList().get(lastSelected)).getName());
 								    Graphics2D g = (Graphics2D)imagePanel.getGraphics();
 									imagePanel.paint(g);
 								}
@@ -649,7 +673,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 							@Override
 							public void actionPerformed(ActionEvent e) {
 								if(imagePanel.getCurrentPolygon().getListCoord().size()>0){
-									int id=polyList.getModel().getSize()-1;
+									int id=polyList.getModel().getSize();
 									imagePanel.setCurrentPolygon(new Polygon(id));
 								}
 								else if(imagePanel.getCurrentPolygon().getListCoord().size()==0){
@@ -762,9 +786,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	}
 	
 	public void editPolyList(String s){
-		//TODO pour l'instant ne fonctionne pas
 		ListModel currentModel = polyList.getModel();
-//		((DefaultComboBoxModel) currentModel).setSelectedItem(s);
 		((DefaultComboBoxModel) currentModel).removeElementAt(lastSelected);
 		((DefaultComboBoxModel) currentModel).insertElementAt(s, lastSelected);
 		saveNeeded = true;
