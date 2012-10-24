@@ -71,14 +71,13 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private static final long serialVersionUID = 1L;
 	private JScrollPane jScrollPane1;
 	private JTree jTree1;
-	private JButton jButton1;
+	private static JButton jButton1;
 	private JPanel jPanel4;
 	private JButton jButton5;
 	private JButton jButton4;
 	private JPanel jPanel3;
 	private JPanel jPanel2;
 	private JTabbedPane jTabbedPane1;
-	private JButton jButton3;
 	private JButton jButton2;
 	private JToggleButton jToggle1;
 	private static JList polyList = new JList();
@@ -120,13 +119,13 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 				jScrollPane1 = new JScrollPane();
 				getContentPane().add(jScrollPane1, BorderLayout.CENTER);
 				jScrollPane1.setSize(1024, 768);
-				jScrollPane1.setPreferredSize(new java.awt.Dimension(963, 711));
+				jScrollPane1.setPreferredSize(new java.awt.Dimension(1397, 721));
 				{
 					jPanel1 = new JPanel();
 					jScrollPane1.setViewportView(jPanel1);
 					GroupLayout jPanel1Layout = new GroupLayout((JComponent)jPanel1);
 					jPanel1.setLayout(jPanel1Layout);
-					jPanel1.setPreferredSize(new java.awt.Dimension(1144, 744));
+					jPanel1.setPreferredSize(new java.awt.Dimension(1326, 702));
 					{
 						jButton4 = new JButton();
 						jButton4.setText("<");
@@ -152,19 +151,16 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 				        });       
 					}
 					{
-						jButton3 = new JButton();
-						jButton3.setText("jButton3");
-					}
-					{
 						jPanel4 = new JPanel();
 						BorderLayout jPanel4Layout = new BorderLayout();
 						jPanel4.setLayout(jPanel4Layout);
 						jPanel4.setSize(800, 600);
 						{
 							this.imagePanel = new ImagePanel("test.jpeg");
+							jPanel4.add(imagePanel, BorderLayout.CENTER);
+							imagePanel.setPreferredSize(new java.awt.Dimension(842, 554));
 							FlowLayout imagePanelLayout = new FlowLayout();
 							this.imagePanel.setLayout(imagePanelLayout);
-							jPanel4.add(imagePanel, BorderLayout.CENTER);
 							this.imagePanel.setOpaque(true);
 						}
 					}
@@ -191,11 +187,11 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 							jPanel2.setLayout(new GridLayout(1, 1));
 							jPanel2.setAutoscrolls(true);
-							
 							{
 								ListModel jList1Model = 
 										new DefaultComboBoxModel(new String[] { });
 								polyList = new JList();
+								jPanel2.add(polyList, "North");
 								polyList.addMouseListener(new MouseListener(){
 									
 									@Override
@@ -211,11 +207,11 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									public void mouseReleased(MouseEvent e) {}
 									
 								});
-								jPanel2.add(polyList, BorderLayout.NORTH);
 								polyList.setModel(jList1Model);
+								polyList.setPreferredSize(new java.awt.Dimension(270, 480));
 								//polyList.setPreferredSize(new java.awt.Dimension(270, 38));
 							}
-							
+
 						}
 						{
 							jPanel3 = new JPanel();
@@ -301,7 +297,25 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 					}
 					{
 						jButton1 = new JButton();
-						jButton1.setText("jButton1");
+						jButton1.setText("Cancel current");
+						jButton1.setEnabled(false);
+						jButton1.addActionListener(new ActionListener(){
+
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								if(imagePanel.getCurrentPolygon().getListCoord().size()>0){
+									int id=polyList.getModel().getSize()-1;
+									imagePanel.setCurrentPolygon(new Polygon(id));
+								}
+								else if(imagePanel.getCurrentPolygon().getListCoord().size()==0){
+									jButton1.setEnabled(false);
+								}
+								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+								imagePanel.paint(g);
+								jButton1.setEnabled(false);
+							}
+							
+						});
 					}
 
 					jPanel1Layout.setHorizontalGroup(jPanel1Layout.createSequentialGroup()
@@ -309,76 +323,80 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						.addComponent(jButton4, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(jPanel1Layout.createParallelGroup()
-						    .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 857, GroupLayout.PREFERRED_SIZE)
+						    .addComponent(jPanel4, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 865, GroupLayout.PREFERRED_SIZE)
 						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addGap(78)
+						        .addGap(156)
 						        .addComponent(jButton2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						        .addGap(116)
+						        .addGap(72)
 						        .addComponent(jToggle1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						        .addGap(116)
+						        .addGap(97)
 						        .addComponent(jButton1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						        .addGap(90)
-						        .addComponent(jButton3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						        .addGap(42)))
-						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						        .addGap(125)))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						.addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-						.addGap(57)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						.addGroup(jPanel1Layout.createParallelGroup()
-						    .addComponent(jButton10, GroupLayout.Alignment.LEADING, 0, 69, Short.MAX_VALUE)
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 11, Short.MAX_VALUE))
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 11, Short.MAX_VALUE))
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 11, Short.MAX_VALUE))
 						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addPreferredGap(jButton10, jButton8, LayoutStyle.ComponentPlacement.INDENT)
+						        .addGap(35)
 						        .addGroup(jPanel1Layout.createParallelGroup()
 						            .addGroup(jPanel1Layout.createSequentialGroup()
-						                .addGap(0, 0, Short.MAX_VALUE)
-						                .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
-						            .addComponent(jButton9, GroupLayout.Alignment.LEADING, 0, 63, Short.MAX_VALUE)
-						            .addGroup(jPanel1Layout.createSequentialGroup()
-						                .addGap(22)
-						                .addGroup(jPanel1Layout.createParallelGroup()
-						                    .addGroup(jPanel1Layout.createSequentialGroup()
-						                        .addGap(0, 0, Short.MAX_VALUE)
-						                        .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						                    .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 41, Short.MAX_VALUE))))))
+						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 0, Short.MAX_VALUE))
+						            .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 45, Short.MAX_VALUE))))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE));
+					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton6, jButton7});
+					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton8, jButton9, jButton10});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton5, jButton4});
-					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton7, jButton6});
 					jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
-						.addContainerGap(69, 69)
+						.addContainerGap(11, 11)
 						.addGroup(jPanel1Layout.createParallelGroup()
 						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						        .addComponent(jPanel4, 0, 622, Short.MAX_VALUE)
+						        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 39, Short.MAX_VALUE)
 						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						            .addComponent(jButton3, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-						        .addGap(25))
+						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
+						        .addGap(35))
 						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(126)
+						        .addGap(155)
 						        .addGroup(jPanel1Layout.createParallelGroup()
 						            .addGroup(jPanel1Layout.createSequentialGroup()
 						                .addGap(0, 0, Short.MAX_VALUE)
 						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE))
 						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						                .addGap(19)
+						                .addGap(26)
 						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
 						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						                .addComponent(jButton7, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-						                .addGap(11)
-						                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						                    .addComponent(jButton4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-						                    .addComponent(jButton8, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-						                    .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+						                .addGroup(jPanel1Layout.createParallelGroup()
+						                    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						                        .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+						                        .addComponent(jButton7, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE))
+						                    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						                        .addGap(14)
+						                        .addComponent(jButton4, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
+						                .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
 						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						                .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-						                .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-						                .addGap(0, 354, Short.MAX_VALUE))))));
+						                .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+						                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						                .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 329, Short.MAX_VALUE))))));
+					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton6, jButton8, jButton9, jButton10});
 					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 				}
 			}
 			pack();
-			this.setSize(1312, 777);
+			this.setSize(1357, 751);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
@@ -400,6 +418,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	public static void addToPolyList(String s){
 		ListModel currentModel = polyList.getModel();
 		((DefaultComboBoxModel) currentModel).addElement(s);
+		jButton10.setEnabled(true);
+		jButton9.setEnabled(true);
 		saveNeeded = true;
 	}
 	
@@ -419,6 +439,9 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	public static void setEnablePolyButtons(boolean b){
 		jButton9.setEnabled(b);
 		jButton10.setEnabled(b);
+	}
+	public static void setEnableCurrPolyButtons(boolean b){
+		jButton1.setEnabled(b);
 	}
 
 	public String getCurrentCollection() {

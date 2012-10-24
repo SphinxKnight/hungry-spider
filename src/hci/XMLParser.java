@@ -27,7 +27,7 @@ public class XMLParser {
 		while(strObject!=null){
 			
 			Scanner scanObject = new Scanner(strObject);
-			String nameObject = scanObject.findInLine("(?<=<name>)[a-zA-Z_0-9]*(?=</name>)");
+			String nameObject = scanObject.findInLine("(?<=<name>)[a-zA-Z_0-9\\s]*(?=</name>)");
 			String colString=scanObject.findInLine("(?<=<color>#)[A-F_0-9]*(?=</color>)");
 			Color colorObject = null;
 			if(colString.length()>0){

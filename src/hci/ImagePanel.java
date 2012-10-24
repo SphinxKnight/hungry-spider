@@ -174,6 +174,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		currentId++;
 		if(currentPolygon.getListCoord().size()>0){
 			setCurrentPolygon(new Polygon(currentId));
+			LabellerFrame.setEnableCurrPolyButtons(false);
 			// 	refresh the polygon panel on the right side
 			LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
 		}
@@ -210,6 +211,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 				g.fillOval(x-5,y-5,10,10);
 				
 				currentPolygon.addPoint(new Point(x,y));
+				LabellerFrame.setEnableCurrPolyButtons(true);
 				//currentPolygon.drawForm(g);
 			}
 		} 
