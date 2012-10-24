@@ -96,7 +96,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JPanel jPanel5;
 	private static JButton jButton10;
 	private static JButton jButton9;
-	private JButton jButton8;
+	private static JButton jButton8;
 	private JPanel jPanel1;
 	private ImagePanel imagePanel;
 	private String currentCollection = "CollecTest1";
@@ -178,6 +178,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 					{
 						jButton8 = new JButton();
 						jButton8.setText("Color");
+						jButton8.setEnabled(false);
 						jButton8.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e){
 								Color newPolyColor = JColorChooser.showDialog(null, "Choose a new polygon's color", null);
@@ -310,6 +311,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jPanel5.add(jButton3);
 									jButton3.setLayout(null);
 									jButton3.setText("+Im");
+									jButton3.setToolTipText("Add an image");
 									jButton3.setPreferredSize(new java.awt.Dimension(37, 25));
 									jButton3.addActionListener(new ActionListener() {
 										
@@ -338,6 +340,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jButton11 = new JButton();
 									jPanel5.add(jButton11);
 									jButton11.setText("-Im");
+									jButton11.setToolTipText("Remove this image");
 									jButton11.setPreferredSize(new java.awt.Dimension(109, 25));
 									final SwitchImageListener s1 = new SwitchImageListener("right",imagePanel,this);
 
@@ -436,6 +439,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jButton12 = new JButton();
 									jPanel5.add(jButton12);
 									jButton12.setText("+Col");
+									jButton12.setToolTipText("Add a collection");
 									jButton12.setPreferredSize(new java.awt.Dimension(37, 25));
 									jButton12.addActionListener(new ActionListener() {
 										 //TODO
@@ -475,6 +479,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jButton13 = new JButton();
 									jPanel5.add(jButton13);
 									jButton13.setText("-Col");
+									jButton13.setToolTipText("Remove this collection");
 									jButton13.setPreferredSize(new java.awt.Dimension(37, 25));
 									jButton13.addActionListener(new ActionListener() {
 										
@@ -599,6 +604,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									Graphics2D g = (Graphics2D)imagePanel.getGraphics();
 									imagePanel.paint(g);
 									if (imagePanel.getNumberPolygon()==0){
+										jButton8.setEnabled(false);
 										jButton9.setEnabled(false);
 										jButton10.setEnabled(false);
 									}
@@ -749,6 +755,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		((DefaultComboBoxModel) currentModel).addElement(s);
 		jButton10.setEnabled(true);
 		jButton9.setEnabled(true);
+		jButton9.setEnabled(true);
 		saveNeeded = true;
 	}
 	
@@ -766,6 +773,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	}
 	
 	public static void setEnablePolyButtons(boolean b){
+		jButton8.setEnabled(b);
 		jButton9.setEnabled(b);
 		jButton10.setEnabled(b);
 	}
