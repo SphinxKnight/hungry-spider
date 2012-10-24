@@ -49,15 +49,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.BasicStroke;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Image;
-import java.awt.Stroke;
-import java.awt.event.MouseMotionListener;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -280,7 +272,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										imagePanel.drawThick( polySelected);
 										Point labelPoint = polySelected.getListCoord().get(0);
 										Graphics g = imagePanel.getGraphics();
-										g.drawImage((Image)imagePanel.textToImage(imagePanel.stringForPoly(polySelected)), (int)labelPoint.getX(), (int)labelPoint.getY()-12, null);
+										g.drawImage((Image)imagePanel.textToImage(imagePanel.stringForPoly(polySelected)), (int)labelPoint.getX()+5, (int)labelPoint.getY()-12-5, null);
 									}
 									public void mouseEntered(MouseEvent e) {}
 									public void mouseExited(MouseEvent e) {}
@@ -290,7 +282,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								});
 								polyList.setModel(jList1Model);
 								polyList.setPreferredSize(new java.awt.Dimension(270, 480));
-								//polyList.setPreferredSize(new java.awt.Dimension(270, 38));
 							}
 
 						}
@@ -636,6 +627,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								    imagePanel.getPolygonsList().get(lastSelected).setName(s);
 								    polyList.setSelectedIndex(lastSelected);
 								    editPolyList(imagePanel.stringForPoly(imagePanel.getPolygonsList().get(lastSelected)));
+								    Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+									imagePanel.paint(g);
 								}
 				            }
 				        });       
@@ -757,6 +750,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		jButton10.setEnabled(true);
 		jButton9.setEnabled(true);
 		jButton9.setEnabled(true);
+		if (polyList.getSelectedIndex() == -1)
+				polyList.setSelectedIndex(lastSelected);
 		saveNeeded = true;
 	}
 	
@@ -769,7 +764,9 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	public void editPolyList(String s){
 		//TODO pour l'instant ne fonctionne pas
 		ListModel currentModel = polyList.getModel();
-		((DefaultComboBoxModel) currentModel).setSelectedItem(s);
+//		((DefaultComboBoxModel) currentModel).setSelectedItem(s);
+		((DefaultComboBoxModel) currentModel).removeElementAt(lastSelected);
+		((DefaultComboBoxModel) currentModel).insertElementAt(s, lastSelected);
 		saveNeeded = true;
 	}
 	

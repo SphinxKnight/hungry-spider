@@ -1,11 +1,8 @@
 package hci;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Stroke;
 import java.util.ArrayList;
 
 public class Polygon extends Form{
