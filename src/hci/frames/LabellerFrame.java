@@ -49,6 +49,15 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.BasicStroke;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Stroke;
+import java.awt.event.MouseMotionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -210,22 +219,13 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 							}
 							
 							@Override
-							public void mousePressed(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
+							public void mousePressed(MouseEvent e) {}
 							
 							@Override
-							public void mouseExited(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
+							public void mouseExited(MouseEvent e) {}
 							
 							@Override
-							public void mouseEntered(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
+							public void mouseEntered(MouseEvent e) {}
 							
 							@Override
 							public void mouseClicked(MouseEvent e) {
@@ -276,7 +276,11 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										
 										int index = polyList.getSelectedIndex();
 										lastSelected = index;
-										imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
+										Polygon polySelected = imagePanel.getPolygonsList().get(index);
+										imagePanel.drawThick( polySelected);
+										Point labelPoint = polySelected.getListCoord().get(0);
+										Graphics g = imagePanel.getGraphics();
+										g.drawImage((Image)imagePanel.textToImage(imagePanel.stringForPoly(polySelected)), (int)labelPoint.getX(), (int)labelPoint.getY()-12, null);
 									}
 									public void mouseEntered(MouseEvent e) {}
 									public void mouseExited(MouseEvent e) {}
@@ -555,10 +559,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									}
 									
 									@Override
-									public void mouseExited(MouseEvent arg0) {
-										// TODO Auto-generated method stub
-										
-									}
+									public void mouseExited(MouseEvent arg0) {}
 									
 									@Override
 									public void mouseEntered(MouseEvent arg0) {
@@ -770,6 +771,10 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		ListModel currentModel = polyList.getModel();
 		((DefaultComboBoxModel) currentModel).setSelectedItem(s);
 		saveNeeded = true;
+	}
+	
+	public static JList getPolyList(){
+		return polyList;
 	}
 	
 	public static void setEnablePolyButtons(boolean b){

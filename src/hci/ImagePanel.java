@@ -5,6 +5,7 @@ import hci.frames.LabellerFrame;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -13,6 +14,8 @@ import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +34,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 	//coordinates of the last clicked point
 	Point pressed;
+	
+	//if the last cursor position was a vertex
+	boolean vertex = false;
 	
 	boolean allPoly = false;
 	
@@ -218,7 +224,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 	}
 
 	@Override
@@ -282,14 +288,30 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 
 
 	@Override
-	public void mouseMoved(MouseEvent arg0) {		
+	public void mouseMoved(MouseEvent e) {
+		boolean oneOfVertex = false;
+		// we deselect the previous polygon, if there was one
+		if(vertex){
+			paint(this.getGraphics());
+		}
+		
+		for (Polygon polygon:polygonsList){
+			if (polygon.isInPolygon(e.getPoint())>=0){
+				//TODO
+				drawThick(polygon);
+				oneOfVertex = true;
+				Graphics g = this.getGraphics();
+				g.drawImage(textToImage(stringForPoly(polygon)), e.getX(), e.getY()-12, null);
+			}
+		}
+		vertex = oneOfVertex;
 	}
+	
 	
 	public String stringForPoly(Polygon polygon) {
 		String listText;
 		if (!polygon.getName().equals("")){
-			listText = "Polygon number "+polygon.getId() + " \n"
-						+polygon.getName();
+			listText = polygon.getName();
 		}
 		else{
 			listText = "Polygon number "+polygon.getId();
@@ -319,7 +341,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		return polygonsList;
 	}
 	
-	public void drawThick(Polygon poly, Point p){
+	public void drawThick(Polygon poly){
 		
 		Graphics g1 = this.getGraphics();
 		g1.setColor(poly.getColor());
@@ -329,18 +351,15 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 		Stroke stroke = new BasicStroke(3f);
 		((Graphics2D) g1).setStroke(stroke);
 		
-		int decalX = p.x;
-		int decalY = p.y;
-
 		if (poly.getSize() != 0){
 			int i;
 			for(i=0;i<poly.getSize()-1;i++){
-				g1.drawLine(poly.getListCoord().get(i).x + decalX,poly.getListCoord().get(i).y + decalY ,poly.getListCoord().get(i+1).x + decalX, poly.getListCoord().get(i+1).y + decalY);
-				g1.fillOval(poly.getListCoord().get(i).x + decalX -5,poly.getListCoord().get(i).y + decalY -5,10,10);
+				g1.drawLine(poly.getListCoord().get(i).x ,poly.getListCoord().get(i).y ,poly.getListCoord().get(i+1).x, poly.getListCoord().get(i+1).y);
+				g1.fillOval(poly.getListCoord().get(i).x -5,poly.getListCoord().get(i).y -5,10,10);
 			}
 			//And the final one
-			g1.drawLine(poly.getListCoord().get(i).x + decalX,poly.getListCoord().get(i).y + decalY ,poly.getListCoord().get(0).x + decalX,poly.getListCoord().get(0).y + decalY);	
-			g1.fillOval(poly.getListCoord().get(i).x + decalX-5,poly.getListCoord().get(i).y + decalY-5,10,10);
+			g1.drawLine(poly.getListCoord().get(i).x,poly.getListCoord().get(i).y ,poly.getListCoord().get(0).x ,poly.getListCoord().get(0).y);	
+			g1.fillOval(poly.getListCoord().get(i).x-5,poly.getListCoord().get(i).y -5,10,10);
 		}
 	}
 	
@@ -349,6 +368,40 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 	
 	
+	public BufferedImage textToImage(String text){
+	       
+        //create the font you wish to use
+        Font font = new Font("Tahoma", Font.PLAIN, 11);
+       
+        //create the FontRenderContext object which helps us to measure the text
+        FontRenderContext frc = new FontRenderContext(null, true, true);
+        
+        //get the height and width of the text
+        Rectangle2D bounds = font.getStringBounds(text, frc);
+        int w = (int) bounds.getWidth();
+        int h = (int) bounds.getHeight();
+       
+        //create a BufferedImage object
+        BufferedImage image = new BufferedImage(w, h,   BufferedImage.TYPE_INT_RGB);
+       
+        //calling createGraphics() to get the Graphics2D
+        Graphics2D g = image.createGraphics();
+       
+        //set color and other parameters
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, w, h);
+        g.setColor(Color.BLACK);
+        g.setFont(font);
+            
+        g.drawString(text, (float) bounds.getX(), (float) -bounds.getY());
+      
+        //releasing resources
+        g.dispose();
+        
+        return image;
+	}
+
+
 	
 	
 	
