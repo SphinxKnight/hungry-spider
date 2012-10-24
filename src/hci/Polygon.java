@@ -22,7 +22,7 @@ public class Polygon extends Form{
 	
 	public Polygon(int id){
 		super(id);
-		this.name = "Poly"+Integer.toString(id);
+		this.name = "Polygon "+Integer.toString(id);
 		Color col=new Color((int)(Math.random()*256),
 				(int)(Math.random()*256),
 				(int)(Math.random()*256));
@@ -123,8 +123,8 @@ public class Polygon extends Form{
 		}
 	}
 
-	public void setName(String stringForPoly) {
-		this.name=stringForPoly;
+	public void setName(String newName) {
+		this.name=newName;
 		
 	}
 	
@@ -135,8 +135,6 @@ public class Polygon extends Form{
 
 	public void setColor(Color newColor) {
 		this.color = newColor;
-		System.out.println(newColor);
-		System.out.println(this.color);
 	}
 	
 	public Color getColor(){

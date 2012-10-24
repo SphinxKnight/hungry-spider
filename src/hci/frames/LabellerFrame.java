@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -81,6 +82,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton2;
 	private JToggleButton jToggle1;
 	private static JList polyList = new JList();
+	private static JButton jButton10;
+	private static JButton jButton9;
 	private JButton jButton8;
 	private JButton jButton7;
 	private JButton jButton6;
@@ -89,7 +92,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private String currentCollection = "CollecTest1";
 	private String currentImage = "test.jpeg";
 	private static boolean saveNeeded = false;
-	private int lastSelected = 0;
+	private static int lastSelected = 0;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -171,10 +174,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jButton8.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e){
 								Color newPolyColor = JColorChooser.showDialog(null, "Choose a new polygon's color", null);
-								//(imagePanel.getPolygonsList().get(lastSelected)).setColor(newPolyColor);
-								imagePanel.setPolyColor(lastSelected, newPolyColor);
-//								System.out.println(imagePanel.getPolygonsList().get(lastSelected).getColor());
-//								System.out.println(newPolyColor);
+								(imagePanel.getPolygonsList().get(lastSelected)).setColor(newPolyColor);
 								Graphics2D g = (Graphics2D)imagePanel.getGraphics();
 								g.setColor(newPolyColor);
 								imagePanel.paint(g);
@@ -184,46 +184,17 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 					{
 						jTabbedPane1 = new JTabbedPane();
 						{
-							// TODO
 							jPanel2 = new JPanel();
-							jTabbedPane1.addTab("My Labels", null, jPanel2, null);
 							jTabbedPane1.addTab("My Labels", null, jPanel2, null);
 							BorderLayout jPanel2Layout = new BorderLayout();
 							jPanel2.setLayout(jPanel2Layout);
 
-							jPanel2.setLayout(new GridLayout(Math.max(imagePanel.getNumberPolygon(), 5), 1));
+							jPanel2.setLayout(new GridLayout(1, 1));
 							jPanel2.setAutoscrolls(true);
 							
-							
-							//
-							//							polyList.addMouseListener(new MouseListener(){
-								//
-								//								@Override
-								//								public void mouseClicked(MouseEvent e) {
-									//									
-									//									System.out.println(polyList.getSelectedIndex());
-									//								}
-								//								public void mouseEntered(MouseEvent e) {}
-								//								public void mouseExited(MouseEvent e) {}
-								//								public void mousePressed(MouseEvent e) {}
-								//								public void mouseReleased(MouseEvent e) {}
-								//								
-								//							});
-							
-							//							polyList = new List();
-							
-							
-							//							polyList.addActionListener(new ActionListener(){
-								//								public void actionPerformed(ActionEvent e){
-									//									System.out.println(polyList.getSelectedIndex());
-									//								}
-								//							});
-							//							jPanel2.add(polyList, BorderLayout.CENTER);
-							//							polyList.setPreferredSize(new java.awt.Dimension(0, 0));
 							{
 								ListModel jList1Model = 
-										new DefaultComboBoxModel(
-												new String[] { });
+										new DefaultComboBoxModel(new String[] { });
 								polyList = new JList();
 								polyList.addMouseListener(new MouseListener(){
 									
@@ -232,9 +203,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										
 										int index = polyList.getSelectedIndex();
 										lastSelected = index;
-										System.out.println(index);
 										imagePanel.drawThick(imagePanel.getPolygonsList().get(index) , new Point(0,0));
-										//										brightPolyList(imageLocation(imagePanel));
 									}
 									public void mouseEntered(MouseEvent e) {}
 									public void mouseExited(MouseEvent e) {}
@@ -244,7 +213,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								});
 								jPanel2.add(polyList, BorderLayout.NORTH);
 								polyList.setModel(jList1Model);
-								polyList.setPreferredSize(new java.awt.Dimension(270, 38));
+								//polyList.setPreferredSize(new java.awt.Dimension(270, 38));
 							}
 							
 						}
@@ -262,6 +231,61 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								jTree1.setPreferredSize(new java.awt.Dimension(166, 234));
 							}
 						}
+					}
+					{
+						jButton10 = new JButton();
+						jButton10.setText("Delete");
+						jButton10.setEnabled(false);
+						jButton10.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+								int n = JOptionPane.showConfirmDialog(
+								    jPanel1,
+								    "You are about to delete this polygon \n"
+								    + "Continue ?",
+								    "Polygon deletion",
+								    JOptionPane.YES_NO_OPTION);
+								if (n==0){
+									removeFromPolyList(lastSelected);
+									imagePanel.getPolygonsList().remove(lastSelected);
+									Graphics2D g = (Graphics2D)imagePanel.getGraphics();
+									imagePanel.paint(g);
+									System.out.println("yes");
+									if (imagePanel.getNumberPolygon()==0){
+										jButton9.setEnabled(false);
+										jButton10.setEnabled(false);
+									}
+								}
+							}
+						});
+					}
+					{
+						jButton9 = new JButton();
+						jButton9.setText("Label");
+						jButton9.setEnabled(false);
+						jButton9.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e){
+				                //TODO
+								Object[] possibilities = null;
+								String s = (String)JOptionPane.showInputDialog(
+								                    jPanel1,
+								                    "New polygon's label :",
+								                    "Edit Label",
+								                    JOptionPane.PLAIN_MESSAGE,
+								                    null,
+								                    possibilities,
+								                    "");
+
+								//If a string was returned, say so.
+								if ((s != null) && (s.length() > 0)) {
+								    imagePanel.getPolygonsList().get(lastSelected).setName(s);
+								    polyList.setSelectedIndex(lastSelected);
+								    editPolyList(imagePanel.stringForPoly(imagePanel.getPolygonsList().get(lastSelected)));
+								}
+//
+//								//If you're here, the return value was null/empty.
+//								setLabel("Come on, finish the sentence!");
+				            }
+				        });       
 					}
 					{
 						jButton6 = new JButton();
@@ -301,18 +325,23 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						        .addGap(42)))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-						.addGap(62)
+						.addGap(57)
 						.addGroup(jPanel1Layout.createParallelGroup()
+						    .addComponent(jButton10, GroupLayout.Alignment.LEADING, 0, 69, Short.MAX_VALUE)
 						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(0, 0, Short.MAX_VALUE)
-						        .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
-						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(23)
+						        .addPreferredGap(jButton10, jButton8, LayoutStyle.ComponentPlacement.INDENT)
 						        .addGroup(jPanel1Layout.createParallelGroup()
 						            .addGroup(jPanel1Layout.createSequentialGroup()
 						                .addGap(0, 0, Short.MAX_VALUE)
-						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
-						            .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 41, Short.MAX_VALUE))))
+						                .addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
+						            .addComponent(jButton9, GroupLayout.Alignment.LEADING, 0, 63, Short.MAX_VALUE)
+						            .addGroup(jPanel1Layout.createSequentialGroup()
+						                .addGap(22)
+						                .addGroup(jPanel1Layout.createParallelGroup()
+						                    .addGroup(jPanel1Layout.createSequentialGroup()
+						                        .addGap(0, 0, Short.MAX_VALUE)
+						                        .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE))
+						                    .addComponent(jButton7, GroupLayout.Alignment.LEADING, 0, 41, Short.MAX_VALUE))))))
 						.addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE));
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton5, jButton4});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton7, jButton6});
@@ -341,9 +370,13 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						                .addGap(11)
 						                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						                    .addComponent(jButton4, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-						                    .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
-						                    .addComponent(jButton8, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
-						                .addGap(419))))));
+						                    .addComponent(jButton8, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+						                    .addComponent(jButton5, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE))
+						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						                .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						                .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 354, Short.MAX_VALUE))))));
 					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 				}
 			}
@@ -371,6 +404,24 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		ListModel currentModel = polyList.getModel();
 		((DefaultComboBoxModel) currentModel).addElement(s);
 		saveNeeded = true;
+	}
+	
+	public static void removeFromPolyList(int index){
+		ListModel currentModel = polyList.getModel();
+		((DefaultComboBoxModel) currentModel).removeElementAt(index);
+		saveNeeded = true;
+	}
+	
+	public void editPolyList(String s){
+		//TODO pour l'instant ne fonctionne pas
+		ListModel currentModel = polyList.getModel();
+		((DefaultComboBoxModel) currentModel).setSelectedItem(s);
+		saveNeeded = true;
+	}
+	
+	public static void setEnablePolyButtons(boolean b){
+		jButton9.setEnabled(b);
+		jButton10.setEnabled(b);
 	}
 
 	public String getCurrentCollection() {

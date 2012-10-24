@@ -179,7 +179,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			// 	refresh the polygon panel on the right side
 			LabellerFrame.addToPolyList(stringForPoly(currentPolygon));
 		}
-			
+		
+		
+			LabellerFrame.setEnablePolyButtons(polygonsList.size()>0);
 		
 	}
 
@@ -286,7 +288,7 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	public String stringForPoly(Polygon polygon) {
 		String listText;
 		if (!polygon.getName().equals("")){
-			listText = "Polygon number "+polygon.getId() + "\n"
+			listText = "Polygon number "+polygon.getId() + " \n"
 						+polygon.getName();
 		}
 		else{
