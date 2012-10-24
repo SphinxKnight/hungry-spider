@@ -405,8 +405,6 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 														if(f2.isFile()){
 															f2.delete();
 														}
-														System.out.println(node1.getClass());
-														
 														d2.removeNodeFromParent(node1);
 														saveNeeded = false;
 													}
@@ -439,12 +437,85 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 									jPanel5.add(jButton12);
 									jButton12.setText("+Col");
 									jButton12.setPreferredSize(new java.awt.Dimension(37, 25));
+									jButton12.addActionListener(new ActionListener() {
+										 //TODO
+										Object[] possibilities = null;
+										
+
+										
+										@Override
+										public void actionPerformed(ActionEvent arg0) {
+											String s = (String)JOptionPane.showInputDialog(
+								                    jPanel1,
+								                    "New Collection:",
+								                    "Create collection",
+								                    JOptionPane.PLAIN_MESSAGE,
+								                    null,
+								                    possibilities,
+								                    "");
+												if(s==null){
+													return;
+												}
+												if(!s.equals("")){
+													DefaultTreeModel d2 = (DefaultTreeModel) jTree1.getModel();
+													TreePath path = jTree1.getNextMatch("MyCollections", 0, Position.Bias.Forward);
+										        	MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
+										        	d2.insertNodeInto(new DefaultMutableTreeNode(s), node,node.getChildCount());
+										            File dir = new File("./MyCollections/"+s);
+										            dir.mkdir();
+										        } else {
+										            
+										        }
+											
+										}
+									
+									});
 								}
 								{	//remove a collection
 									jButton13 = new JButton();
 									jPanel5.add(jButton13);
 									jButton13.setText("-Col");
 									jButton13.setPreferredSize(new java.awt.Dimension(37, 25));
+									jButton13.addActionListener(new ActionListener() {
+										
+										@Override
+										public void actionPerformed(ActionEvent arg0) {
+											File origin = new File("./MyCollections/");
+											File[] collecs = origin.listFiles();
+											TreePath selcPath = jTree1.getSelectionPath();
+											if(selcPath==null){
+												return ;
+											}
+											String nameSel = selcPath.getLastPathComponent().toString();
+											boolean isSelACollec = false;
+											for(int i=0;i<collecs.length;i++){
+												if(collecs[i].getName().equals(nameSel)){
+													isSelACollec = true;
+													break;
+												}
+											}
+											if(!isSelACollec){
+											//Something else has been selected
+												return;
+											}
+											//In the current collection ? 
+											if(currentCollection.equals(nameSel)){
+												JOptionPane.showMessageDialog(jPanel1,
+													    "You cannot delete the current collection",
+													    "Warning",
+													    JOptionPane.WARNING_MESSAGE);
+												return;
+											}
+											//We can delete File and node 
+											File collecSel = new File("./MyCollections/"+nameSel);
+											deleteDirectory(collecSel);
+											//Delete Node
+											TreePath path =jTree1.getSelectionPath();
+											DefaultTreeModel d2 = (DefaultTreeModel) jTree1.getModel();
+											MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
+											d2.removeNodeFromParent(node);
+										}
+									});
 								}
 							}
 							{
@@ -773,5 +844,19 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		}
 	}
 
+	 static public boolean deleteDirectory(File path) {
+		    if( path.exists() ) {
+		      File[] files = path.listFiles();
+		      for(int i=0; i<files.length; i++) {
+		         if(files[i].isDirectory()) {
+		           deleteDirectory(files[i]);
+		         }
+		         else {
+		           files[i].delete();
+		         }
+		      }
+		    }
+		    return( path.delete() );
+		  }
 
 }
