@@ -254,6 +254,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										jButton9.setEnabled(false);
 										jButton10.setEnabled(false);
 									}
+									lastSelected = Math.min(lastSelected, imagePanel.getNumberPolygon()-1);
+									polyList.setSelectedIndex(lastSelected);
 								}
 							}
 						});
