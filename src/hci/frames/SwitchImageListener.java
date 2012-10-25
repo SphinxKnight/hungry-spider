@@ -90,6 +90,9 @@ public class SwitchImageListener implements ActionListener {
 				newImage = listImageInCollec.get(listImageInCollec.size()-1);
 				
 			}
+			else if(indexCurr-1<0){
+				newImage = listImageInCollec.get(0);
+			}
 			else{
 				newImage = listImageInCollec.get(indexCurr-1);
 			}

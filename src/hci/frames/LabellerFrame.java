@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -39,9 +38,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -265,7 +262,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						BorderLayout jPanel4Layout = new BorderLayout();
 						jPanel4.setLayout(jPanel4Layout);
 						jPanel4.setSize(800, 600);
-						{
+						{	File root = new File("./MyCollections");
 							if(currentImage!=null && currentCollection!=null){
 								this.imagePanel = new ImagePanel(new File("./MyCollections/"+currentCollection+"/"+currentImage));
 								File xmlToLoad = new File("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");
@@ -283,8 +280,38 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 								
 								}
 							}
+							//If one collection at least, load firt image
+							else if(root.listFiles().length>0){
+								File collec = root.listFiles()[0];
+								currentCollection = collec.getName();
+								if(collec.listFiles().length>0){
+									//Load image
+									File image = collec.listFiles()[0];
+									currentImage = image.getName();
+									this.imagePanel = new ImagePanel(image);
+									//If xml
+									File xml = new File("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");
+									if(xml.isFile()){
+										XMLParser xp = new XMLParser();
+										xp.interpretFile("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");
+										ArrayList<Form> af = new ArrayList<Form>();
+										ArrayList<Polygon> ap = new ArrayList<Polygon>();
+										af = xp.getListForm();
+										for(int i=0;i<af.size();i++){
+											ap.add((Polygon) af.get(i));
+										}
+										this.imagePanel.setPolygonsList(ap);
+									}
+									else{
+										this.imagePanel.setPolygonsList(new ArrayList<Polygon>());
+									}
+								}
+								else{
+									this.imagePanel = new ImagePanel();
+								}
+							}
 							else{
-							this.imagePanel = new ImagePanel();
+								this.imagePanel = new ImagePanel();
 							}
 							jPanel4.add(imagePanel, BorderLayout.CENTER);
 							imagePanel.setPreferredSize(new java.awt.Dimension(800, 605));
@@ -470,8 +497,28 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										            File dest = new File("./MyCollections/"+currentCollection+"/"+file.getName());
 										            CopyFile.copyfile(file.getAbsolutePath(),dest.getAbsolutePath());
 										            TreePath path = jTree1.getNextMatch(currentCollection, 0, Position.Bias.Forward);
+										           
 										            MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
 										            d2.insertNodeInto(new DefaultMutableTreeNode(dest.getName()), node,node.getChildCount());
+										            
+										            //If current collec empty : load image now
+										            File collDir = new File("./MyCollections/"+currentCollection);
+										            File[] files = collDir.listFiles();
+										            if(files.length==1){
+										            	currentImage=fc.getSelectedFile().getName();
+										            	ImagePanel ig;
+														try {
+															ig = new ImagePanel(dest);
+															setImagePanel(ig, new ArrayList<Form>());
+														} catch (Exception e) {
+															// TODO Auto-generated catch block
+															e.printStackTrace();
+														}
+										            	
+										            }
+										            else{
+										            	
+										            }
 										            
 										        } else {
 										            
@@ -615,7 +662,11 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										        } else {
 										            
 										        }
-											
+												
+											if(currentCollection==null){
+												currentCollection=s;
+												jLabel4.setText(s);
+											}
 										}
 									
 									});
@@ -935,7 +986,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						});
 					}
 					if(activeButton){
-						this.setEnablePolyButtons(activeButton);
+						LabellerFrame.setEnablePolyButtons(activeButton);
 					}
 
 					jPanel1Layout.setHorizontalGroup(jPanel1Layout.createSequentialGroup()
@@ -1171,6 +1222,15 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 			//POP UP error
 			e.printStackTrace();
 		}
+		 File save = new File("save.txt");
+	        try {
+				FileWriter writer = new FileWriter(save);
+				writer.write(currentCollection+"____"+currentImage);
+				writer.close();
+	        } catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 	}
 
 	 static public boolean deleteDirectory(File path) {
