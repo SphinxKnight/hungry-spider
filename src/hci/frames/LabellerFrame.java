@@ -498,6 +498,15 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 											 if (returnVal == JFileChooser.APPROVE_OPTION) {
 										            File file = fc.getSelectedFile();
 										        	DefaultTreeModel d2 = (DefaultTreeModel) jTree1.getModel();
+										        	if(currentCollection==null){
+										        		currentCollection="Coll1";
+										        		jLabel4.setText(currentCollection);
+										        		TreePath path = jTree1.getNextMatch("MyCollections", 0, Position.Bias.Forward);
+											        	MutableTreeNode node = (MutableTreeNode) path.getLastPathComponent();
+											        	d2.insertNodeInto(new DefaultMutableTreeNode(currentCollection), node,node.getChildCount());
+											            File dir = new File("./MyCollections/"+currentCollection);
+											            dir.mkdir();
+										        	}
 										            File dest = new File("./MyCollections/"+currentCollection+"/"+file.getName());
 										            CopyFile.copyfile(file.getAbsolutePath(),dest.getAbsolutePath());
 										            jTree1.expandRow(0);
