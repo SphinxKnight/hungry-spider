@@ -491,7 +491,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										
 										@Override
 										public void actionPerformed(ActionEvent arg0) {
-											FileFilter filter = new FileNameExtensionFilter("JPG","png","jpg", "jpeg");
+											FileFilter filter = new FileNameExtensionFilter("Images","png","jpg", "jpeg");
 											final JFileChooser fc = new JFileChooser();
 											fc.setFileFilter(filter);
 											int returnVal = fc.showOpenDialog(jPanel1);
