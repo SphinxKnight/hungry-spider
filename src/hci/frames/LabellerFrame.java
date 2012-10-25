@@ -54,6 +54,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -489,7 +491,9 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										
 										@Override
 										public void actionPerformed(ActionEvent arg0) {
+											FileFilter filter = new FileNameExtensionFilter("JPG","png","jpg", "jpeg");
 											final JFileChooser fc = new JFileChooser();
+											fc.setFileFilter(filter);
 											int returnVal = fc.showOpenDialog(jPanel1);
 											 if (returnVal == JFileChooser.APPROVE_OPTION) {
 										            File file = fc.getSelectedFile();

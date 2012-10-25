@@ -70,7 +70,7 @@ public class SwitchImageListener implements ActionListener {
 		    for (int i=0; i<children.length; i++) {
 		        // Get filename of file or directory
 		        String filename = children[i];
-		        if(filename.endsWith("jpg")||filename.endsWith("jpeg")||filename.endsWith("JPG")||filename.endsWith("png")){
+		        if(filename.endsWith("jpg")||filename.endsWith("jpeg")||filename.endsWith("JPG")||filename.endsWith("png")||filename.endsWith("PNG")){
 		        	listImageInCollec.add(filename);
 		        }
 		    }

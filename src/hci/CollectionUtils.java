@@ -33,7 +33,7 @@ public class CollectionUtils {
 
 	public static void getList(DefaultMutableTreeNode node, File f) {
 	     if(!f.isDirectory()) {
-	    	 if (f.getName().endsWith(".jpg") || f.getName().endsWith(".jpeg") ||f.getName().endsWith(".JPG") ||f.getName().endsWith(".png") ) {
+	    	 if (f.getName().endsWith(".jpg") || f.getName().endsWith(".jpeg") ||f.getName().endsWith(".JPG") ||f.getName().endsWith(".png")||f.getName().endsWith("PNG") ) {
 	            DefaultMutableTreeNode child = new DefaultMutableTreeNode(f.getName());
 	            node.add(child);
 	            }
