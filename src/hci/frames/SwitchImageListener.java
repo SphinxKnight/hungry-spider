@@ -111,6 +111,7 @@ public class SwitchImageListener implements ActionListener {
 				imagePanel = new ImagePanel("./MyCollections/"+currentCollection+"/"+newImage);
 			}
 			lf.setImagePanel(imagePanel,xmlFormList);
+			lf.setSaveNeeded(false);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
