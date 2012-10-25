@@ -115,6 +115,17 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 			image.getGraphics().drawImage(scaledImage,0,0,  this);
 		}
 	}
+	public ImagePanel(File imageF) throws Exception{
+		this();
+		image = ImageIO.read(imageF);
+		if (image.getWidth() > 800 || image.getHeight() > 600) {
+			int newWidth = image.getWidth() > 800 ? 800 : (image.getWidth() * 600)/image.getHeight();
+			int newHeight = image.getHeight() > 600 ? 600 : (image.getHeight() * 800)/image.getWidth();
+			Image scaledImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_FAST);
+			image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+			image.getGraphics().drawImage(scaledImage,0,0,  this);
+		}
+	}
 
 	/**
 	 * Displays the image
@@ -368,6 +379,9 @@ public class ImagePanel extends JPanel implements MouseListener, MouseMotionList
 	}
 	
 	
+	public void setPolygonsList(ArrayList<Polygon> polygonsList) {
+		this.polygonsList = polygonsList;
+	}
 	public BufferedImage textToImage(String text){
 	       
         //create the font you wish to use

@@ -35,6 +35,7 @@ public class PopUpFrame extends javax.swing.JFrame {
 
 	private JButton validButton;
 	private JButton cancelButton;
+	private JButton jButton1;
 	private JLabel question;
 
 	/**
@@ -80,7 +81,7 @@ public class PopUpFrame extends javax.swing.JFrame {
 				cancelButton = new JButton();
 				getContentPane().add(cancelButton);
 				cancelButton.setText("Cancel");
-				cancelButton.setBounds(402, 135, 182, 38);
+				cancelButton.setBounds(580, 135, 105, 38);
 				cancelButton.addActionListener(new ActionListener() {
 					
 					@Override
@@ -98,6 +99,23 @@ public class PopUpFrame extends javax.swing.JFrame {
 				question.setText(message);
 				getContentPane().add(question);
 				question.setBounds(15, 17, 711, 106);
+			}
+			{
+				jButton1 = new JButton();
+				getContentPane().add(jButton1);
+				jButton1.setText("Do not save");
+				jButton1.setBounds(415, 135, 103, 38);
+				jButton1.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						setVisible(false);
+						dispose();
+						switchImageListener.nosave();
+						
+						
+					}
+				});
 			}
 			pack();
 			this.setSize(824, 234);

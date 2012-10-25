@@ -4,6 +4,7 @@ import hci.CopyFile;
 import hci.Form;
 import hci.ImagePanel;
 import hci.Polygon;
+import hci.XMLParser;
 import hci.XMLwriter;
 
 import java.awt.BorderLayout;
@@ -13,6 +14,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,10 +22,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
@@ -31,7 +38,10 @@ import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -51,7 +61,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.Image;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -92,6 +101,12 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private JButton jButton2;
 	private JToggleButton jToggle1;
 	private static JList polyList = new JList();
+	private JLabel jLabel4;
+	private JLabel jLabel3;
+	private JLabel jLabel2;
+	private JLabel jLabel1;
+	private JButton saveButton;
+	private JButton jButton6;
 	private JButton jButton13;
 	private JButton jButton12;
 	private JButton jButton11;
@@ -102,8 +117,8 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	private static JButton jButton8;
 	private JPanel jPanel1;
 	private ImagePanel imagePanel;
-	private String currentCollection = "CollecTest1";
-	private String currentImage = "test.jpeg";
+	private String currentCollection;
+	private String currentImage;
 	private static boolean saveNeeded = false;
 	private static int lastSelected = 0;
 
@@ -122,13 +137,89 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 	
 	public LabellerFrame() {
 		super();
+		File root = new File("MyCollections");
+		if(!root.isDirectory()){
+			root.mkdir();
+		}
+		File  save = new File("save.txt");
+		if(save.isFile()){
+			try {
+				Scanner fs = new Scanner(save);
+				String line = fs.nextLine();
+				
+				String sCollection = line.split("____")[0];
+				String sImage = line.split("____")[1];
+				
+				File collectionF = new File("./MyCollections/"+sCollection);
+				File imageF= new File("./MyCollections/"+sCollection+"/"+sImage);
+				//Security check
+				if(collectionF.isDirectory()&&imageF.isFile()){
+					this.currentCollection = sCollection;
+					this.currentImage = sImage;
+				}
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		initGUI();
+		addWindowListener(new WindowAdapter() {
+		      public void windowClosing(WindowEvent e) {
+		    	if(saveNeeded){
+		    		Object[] options = {"Yes ",
+		                    "No",
+		                    "Cancel"};
+		    		int n = JOptionPane.showOptionDialog(jPanel1,
+		    			    "Would you like to save your work "
+		    			    + "before exiting?",
+		    			    "Save ?",
+		    			    JOptionPane.YES_NO_CANCEL_OPTION, 
+		    			    JOptionPane.QUESTION_MESSAGE,
+		    			    null,
+		    			    options,
+		    			    options[2]);
+		    		
+		    		//Yest
+		    		if(n==0){
+		    			System.out.println("yes");
+		    			save();
+		    			 File save = new File("save.txt");
+		 		        try {
+		 					FileWriter writer = new FileWriter(save);
+		 					writer.write(currentCollection+"____"+currentImage);
+		 					writer.close();
+		 		        } catch (IOException e1) {
+		 					// TODO Auto-generated catch block
+		 					e1.printStackTrace();
+		 				}
+		 		        dispose();
+		    			
+		    		}
+		    		//No
+		    		if(n==1){
+		    			System.out.println("no");
+		    			dispose();
+		    			
+		    		}
+		    		if(n==2){
+		    			System.out.println("cancel");
+		    			
+		    		}
+
+		    	}
+		    	else{
+		    		dispose();
+		    	}
+		      
+		      }
+		});
 	}
 	
 	private void initGUI() {
 		try {
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			this.setTitle("Labeller");
+			
 			{
 				jScrollPane1 = new JScrollPane();
 				getContentPane().add(jScrollPane1, BorderLayout.CENTER);
@@ -170,9 +261,27 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						jPanel4.setLayout(jPanel4Layout);
 						jPanel4.setSize(800, 600);
 						{
-							this.imagePanel = new ImagePanel("test.jpeg");
+							if(currentImage!=null && currentCollection!=null){
+								this.imagePanel = new ImagePanel(new File("./MyCollections/"+currentCollection+"/"+currentImage));
+								File xmlToLoad = new File("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");
+								if(xmlToLoad.isFile()){
+									XMLParser xp = new XMLParser();
+									xp.interpretFile("./MyCollections/"+currentCollection+"/"+xmlToLoad.getName());
+									ArrayList<Polygon> ap = new ArrayList<Polygon>();
+									ArrayList<Form> af=new ArrayList<Form>();
+									af=xp.getListForm();
+									for(int i=0;i<af.size();i++){
+										ap.add((Polygon) af.get(i));
+									}
+									this.imagePanel.setPolygonsList(ap);
+								
+								}
+							}
+							else{
+							this.imagePanel = new ImagePanel();
+							}
 							jPanel4.add(imagePanel, BorderLayout.CENTER);
-							imagePanel.setPreferredSize(new java.awt.Dimension(842, 554));
+							imagePanel.setPreferredSize(new java.awt.Dimension(865, 592));
 							FlowLayout imagePanelLayout = new FlowLayout();
 							this.imagePanel.setLayout(imagePanelLayout);
 							this.imagePanel.setOpaque(true);
@@ -258,9 +367,16 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 							jPanel2.setLayout(new GridLayout(1, 1));
 							jPanel2.setAutoscrolls(true);
-							{
+							{	
 								ListModel jList1Model = 
 										new DefaultComboBoxModel(new String[] { });
+								if(this.imagePanel.getPolygonsList()!=null){
+									for(int i=0;i<this.imagePanel.getPolygonsList().size();i++){
+										((DefaultComboBoxModel) jList1Model).addElement(this.imagePanel.getPolygonsList().get(i).getName());	
+									}
+									
+								}
+								
 								polyList = new JList();
 								jPanel2.add(polyList, "North");
 								polyList.addMouseListener(new MouseListener(){
@@ -274,7 +390,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 										imagePanel.drawThick( polySelected);
 										Point labelPoint = polySelected.getListCoord().get(0);
 										Graphics g = imagePanel.getGraphics();
-										g.drawImage((Image)imagePanel.textToImage(polySelected.getName()), (int)labelPoint.getX()+5, (int)labelPoint.getY()-12-5, null);
+										g.drawImage((Image)imagePanel.textToImage(polySelected.getName()), (int)labelPoint.getX()+5, (int)labelPoint.getY()-12-5, null );
 									}
 									public void mouseEntered(MouseEvent e) {}
 									public void mouseExited(MouseEvent e) {}
@@ -604,6 +720,87 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						}
 					}
 					{
+						jButton6 = new JButton();
+						jButton6.setText("Change collection");
+						jButton6.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent evt) {
+								File origin = new File("./MyCollections/");
+								File[] collecs = origin.listFiles();
+								String futureCollec =null;
+								int i;
+								for(i=0;i<collecs.length;i++){
+									if(collecs[i].getName().equals(currentCollection)){
+										break;
+									}
+								}
+								
+								if(i==collecs.length-1){
+									futureCollec =  collecs[0].getName();
+								}
+								else if(i==collecs.length){
+									futureCollec = collecs[0].getName();
+								}
+								else{
+									futureCollec = collecs[i+1].getName();
+								}
+								
+								//Change collection
+								currentCollection = futureCollec;
+								//If collec is empty ?
+								File originCollec = new File("./MyCollections/"+futureCollec);
+								
+								File[] imgInCollecs = originCollec.listFiles();
+								
+								if(imgInCollecs.length==0){
+									jLabel3.setText("");
+									jLabel4.setText(currentCollection);
+									currentImage="";
+									ImagePanel ig = new ImagePanel();
+									try {
+										setImagePanel(ig, new ArrayList<Form>());
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+								else{
+									
+									//Display image in collection
+									File imageToDisplay=imgInCollecs[0];
+									currentImage=imageToDisplay.getName();
+									jLabel3.setText(currentImage);
+									jLabel4.setText(currentCollection);
+									try {
+										ArrayList<Form> listForm = new ArrayList<Form>();
+										ImagePanel ig = new ImagePanel(imageToDisplay);
+										//if xml File
+										File xmlPotential = new File("./MyCollections/"+currentCollection+"/"+currentImage.split("\\.")[0]+".xml");
+										if(xmlPotential.isFile()){
+											XMLParser xp = new XMLParser();
+											xp.interpretFile("./MyCollections/"+currentCollection+"/"+xmlPotential.getName());
+											listForm = xp.getListForm();
+											
+										}
+										ArrayList<Polygon> listPoly = new ArrayList<Polygon>();
+										for (Form form : listForm) {
+											listPoly.add((Polygon) form);
+										}
+										ig.setPolygonsList(listPoly);
+										setImagePanel(ig, listForm);
+										
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									
+								}
+								
+								
+							}
+						});
+					}
+					{
 						jButton10 = new JButton();
 						jButton10.setText("Delete");
 						jButton10.setEnabled(false);
@@ -665,6 +862,43 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 					}
 					{
+						jLabel1 = new JLabel();
+						jLabel1.setText("Current collection :");
+					}
+					{
+						jLabel2 = new JLabel();
+						jLabel2.setText("Current image :");
+					}
+					{
+						jLabel3 = new JLabel();
+						if(this.currentImage!=null){
+							jLabel3.setText(currentImage);
+						}
+					}
+					{
+						jLabel4 = new JLabel();
+						if(this.currentCollection!=null){
+							jLabel4.setText(currentCollection);
+						}
+					}
+					{
+						saveButton = new JButton();
+						saveButton.setText("Save");
+						saveButton.addActionListener(new ActionListener() {
+							
+							@Override
+							public void actionPerformed(ActionEvent arg0) {
+								if(currentImage!=null&&currentCollection!=null){
+									if(!currentImage.equals("")&&!currentCollection.equals("")){
+										save();
+									}
+								}
+								
+								
+							}
+						});
+					}
+					{
 						jButton1 = new JButton();
 						jButton1.setText("Cancel current");
 						jButton1.setEnabled(false);
@@ -703,32 +937,63 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						        .addGap(125)))
 						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						.addComponent(jButton5, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
 						.addGroup(jPanel1Layout.createParallelGroup()
+						    .addComponent(saveButton, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
 						    .addComponent(jButton8, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
 						    .addComponent(jButton9, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
 						    .addComponent(jButton10, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-						.addGap(0, 17, Short.MAX_VALUE)
-						.addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE));
-					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton8, jButton9, jButton10});
+						.addGap(34)
+						.addGroup(jPanel1Layout.createParallelGroup()
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 77, Short.MAX_VALUE))
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)
+						        .addGap(0, 77, Short.MAX_VALUE))
+						    .addComponent(jTabbedPane1, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 270, GroupLayout.PREFERRED_SIZE)
+						    .addGroup(jPanel1Layout.createSequentialGroup()
+						        .addGap(38)
+						        .addGroup(jPanel1Layout.createParallelGroup()
+						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						                .addComponent(jLabel3, 0, 189, Short.MAX_VALUE)
+						                .addGap(0, 6, GroupLayout.PREFERRED_SIZE))
+						            .addComponent(jLabel4, GroupLayout.Alignment.LEADING, 0, 195, Short.MAX_VALUE)
+						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						                .addPreferredGap(jLabel3, jButton6, LayoutStyle.ComponentPlacement.INDENT)
+						                .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, 160, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 29, Short.MAX_VALUE)))
+						        .addGap(37))));
+					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {saveButton, jButton10});
+					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton8, jButton9});
 					jPanel1Layout.linkSize(SwingConstants.HORIZONTAL, new Component[] {jButton5, jButton4});
 					jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
 						.addContainerGap(10, 10)
 						.addGroup(jPanel1Layout.createParallelGroup()
 						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
 						        .addComponent(jPanel4, GroupLayout.PREFERRED_SIZE, 603, GroupLayout.PREFERRED_SIZE)
-						        .addGap(0, 40, Short.MAX_VALUE)
+						        .addGap(0, 52, Short.MAX_VALUE)
 						        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						            .addComponent(jButton2, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jToggle1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 						            .addComponent(jButton1, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))
-						        .addGap(35))
-						    .addGroup(jPanel1Layout.createSequentialGroup()
-						        .addGap(156)
+						        .addGap(17))
+						    .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+						        .addGap(21)
+						        .addComponent(jLabel1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						        .addComponent(jLabel4, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						        .addComponent(jLabel2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+						        .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+						        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						        .addComponent(jButton6, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						        .addGroup(jPanel1Layout.createParallelGroup()
-						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-						                .addGap(0, 0, Short.MAX_VALUE)
-						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE))
+						            .addGroup(jPanel1Layout.createSequentialGroup()
+						                .addComponent(jTabbedPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 0, Short.MAX_VALUE))
 						            .addGroup(GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
 						                .addGap(59)
 						                .addGroup(jPanel1Layout.createParallelGroup()
@@ -743,7 +1008,10 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 						                .addComponent(jButton9, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
 						                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 						                .addComponent(jButton10, GroupLayout.PREFERRED_SIZE, 31, GroupLayout.PREFERRED_SIZE)
-						                .addGap(0, 329, Short.MAX_VALUE))))));
+						                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+						                .addComponent(saveButton, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						                .addGap(0, 290, Short.MAX_VALUE)))))
+						.addContainerGap());
 					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton8, jButton9, jButton10});
 					jPanel1Layout.linkSize(SwingConstants.VERTICAL, new Component[] {jButton5, jButton4});
 				}
@@ -754,6 +1022,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		    //add your error handling code here
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public void paint(Graphics g) {
@@ -811,6 +1080,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 	public void setCurrentCollection(String currentCollection) {
 		this.currentCollection = currentCollection;
+		jLabel4.setText(currentCollection);
 	}
 
 	public String getCurrentImage() {
@@ -819,6 +1089,7 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 
 	public void setCurrentImage(String currentImage) {
 		this.currentImage = currentImage;
+		jLabel3.setText(currentImage);
 	}
 
 	public boolean isSaveNeeded() {
@@ -846,10 +1117,16 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		for (Form polygon : listForm) {
 			((DefaultComboBoxModel) currentModel).addElement(polygon.getName());
 		}
-		
+		if(listForm.size()>0){
+			jButton8.setEnabled(true);
+			jButton9.setEnabled(true);
+			jButton10.setEnabled(true);
+		}
+		polyList.setModel(currentModel);
 		polyList.repaint();
 		imagePanel.repaint();
 		this.repaint();
+		
 	}
 
 	@SuppressWarnings("static-access")
@@ -890,5 +1167,5 @@ public class LabellerFrame extends javax.swing.JFrame implements ActionListener 
 		    }
 		    return( path.delete() );
 		  }
-
+	 
 }

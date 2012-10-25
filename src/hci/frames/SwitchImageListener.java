@@ -38,6 +38,7 @@ public class SwitchImageListener implements ActionListener {
 			saveQuestion.setLocationRelativeTo(null);
 			saveQuestion.setAlwaysOnTop(true);
 			saveQuestion.setVisible(true);
+			lf.setSaveNeeded(false);
 		}
 		else{
 			changeImage();
@@ -51,6 +52,14 @@ public class SwitchImageListener implements ActionListener {
 		//write file
 		changeImage();
 	}
+	public void nosave(){
+
+		
+		//list of polygons 
+		//write file
+		changeImage();
+	}
+	
 	public void changeImage(){
 		File dir = new File("./MyCollections/"+currentCollection);
 		ArrayList<String> listImageInCollec = new ArrayList<String>();
